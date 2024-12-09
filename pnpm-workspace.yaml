@@ -1,0 +1,4 @@
+link-workspace-packages: true
+packages:
+  - 'components/*'
+  - 'components/coopback/src/plugins/*'

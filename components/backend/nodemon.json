@@ -1,0 +1,6 @@
+{
+  "watch": ["swagger.json"],
+  "ext": "json",
+  "exec": "pnpm run docs && pnpm run generate-client"
+}
+

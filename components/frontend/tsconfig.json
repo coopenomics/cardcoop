@@ -1,0 +1,25 @@
+{
+  "extends": "@quasar/app-vite/tsconfig-preset",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    // "declaration": true,                // Включаем генерацию деклараций типов
+    // "declarationDir": "./dist/types",   // Папка, куда будут сохранены сгенерированные типы
+    // "emitDeclarationOnly": true,        // Генерировать только типы, без JS-кода
+    // "outDir": "./dist/library",                 // Папка для сборки JS
+  },
+  "vueCompilerOptions": {
+    "plugins": ["@vue/language-plugin-pug"]
+  },
+  // "include": ["./**/*.vue", "./**/*.ts"],
+  "exclude": [
+    "./Env-example.ts",
+    "./dist",
+    "./.quasar",
+    "./node_modules",
+    "./src-capacitor",
+    "./src-cordova",
+    "./quasar.config.*.temporary.compiled*"
+  ]
+}

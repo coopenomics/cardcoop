@@ -1,0 +1,9 @@
+74 error Error: Command failed with exit code 128: git push --follow-tags --no-verify --atomic origin testnet
+74 error Connection to github.com closed by remote host.
+74 error client_loop: send disconnect: Broken pipe
+74 error fatal: Не удалось прочитать из внешнего репозитория.
+74 error
+74 error Удостоверьтесь, что у вас есть необходимые права доступа
+74 error и репозиторий существует.
+74 error     at makeError (/Users/darksun/dacom-code/foundation/monocoop/node_modules/.pnpm/execa@5.0.0/node_modules/execa/lib/error.js:59:11)
+74 error     at handlePromise (/Users/darksun/dacom-code/foundation/monocoop/node_modules/.pnpm/execa@5.0.0/node_modules/execa/index.js:114:26)

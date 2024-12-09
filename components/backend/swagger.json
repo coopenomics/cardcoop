@@ -1,0 +1,610 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/initiate-registration": {
+      "post": {
+        "description": "Инициализация регистрации",
+        "operationId": "initiateRegistration",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiateRegistrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешная инициализация регистрации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiateRegistrationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "initiateRegistration",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/complete-registration": {
+      "post": {
+        "description": "Завершение регистрации",
+        "operationId": "completeRegistration",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteRegistrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное завершение регистрации",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "completeRegistration",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/initiate-login": {
+      "post": {
+        "description": "Инициализация входа",
+        "operationId": "initiateLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiateLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешная инициализация входа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiateLoginDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "initiateLogin",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/complete-login": {
+      "post": {
+        "description": "Завершение входа",
+        "operationId": "completeLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное завершение входа",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "completeLogin",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "description": "Обновление токена",
+        "operationId": "refreshAccessToken",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное обновление токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "refreshAccessToken",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Выход",
+        "operationId": "logout",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный выход"
+          }
+        },
+        "summary": "logout",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/card/issue": {
+      "post": {
+        "description": "Выпуск карты",
+        "operationId": "issueCard",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueCardDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешный выпуск карты",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "issueCard",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
+    "/access/prepare-share-data": {
+      "post": {
+        "description": "Подготовка данных для общего доступа",
+        "operationId": "prepareShareData",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrepareShareDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешная подготовка данных",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoopInfoResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "prepareShareData",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/access/share-data": {
+      "post": {
+        "description": "Передача данных",
+        "operationId": "shareData",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShareDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешная передача данных",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareDataResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "shareData",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/access/exchange-ticket": {
+      "post": {
+        "description": "Обмен тикета на JWT",
+        "operationId": "exchangeTicketForJwt",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoopExchangeTicketDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешный обмен тикета на JWT",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoopJwtResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "exchangeTicketForJwt",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/access/get-encrypted-data/{username}/{coopName}": {
+      "get": {
+        "description": "Получение зашифрованных данных",
+        "operationId": "getEncryptedData",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "coopName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение зашифрованных данных",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "encryptedData": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "getEncryptedData",
+        "tags": [
+          "Access"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Auth Backend",
+    "description": "API для авторизации и управления пользователями",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "InitiateRegistrationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "user@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "CompleteRegistrationDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "user@example.com"
+          },
+          "hashKey": {
+            "type": "string",
+            "description": "Хэш-ключ для завершения регистрации",
+            "example": "secureHash123"
+          },
+          "uuid": {
+            "type": "string",
+            "description": "Уникальный идентификатор запроса",
+            "example": "uuid-123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "email",
+          "hashKey",
+          "uuid"
+        ]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Токен доступа для авторизации",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Токен для обновления доступа",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "InitiateLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "user@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "CompleteLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "user@example.com"
+          },
+          "hashKey": {
+            "type": "string",
+            "description": "Хэш-ключ для завершения входа",
+            "example": "secureHash123"
+          },
+          "uuid": {
+            "type": "string",
+            "description": "Уникальный идентификатор запроса",
+            "example": "uuid-123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "email",
+          "hashKey",
+          "uuid"
+        ]
+      },
+      "IssueCardDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя, которому будет выдана карта",
+            "example": "john_doe"
+          },
+          "encryptedData": {
+            "type": "string",
+            "description": "Зашифрованные данные, связанные с картой",
+            "example": "encryptedData123456abcdef"
+          },
+          "coopName": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "CoopNameXYZ"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Цифровая подпись для проверки данных",
+            "example": "signatureBase64Encoded12345"
+          }
+        },
+        "required": [
+          "username",
+          "encryptedData",
+          "coopName",
+          "signature"
+        ]
+      },
+      "CardResponseDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "PrepareShareDataDto": {
+        "type": "object",
+        "properties": {
+          "coopName": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "CoopNameXYZ"
+          }
+        },
+        "required": [
+          "coopName"
+        ]
+      },
+      "CoopInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "coopName": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "CoopNameXYZ"
+          },
+          "coopPublicKey": {
+            "type": "string",
+            "description": "Публичный ключ кооператива",
+            "example": "publicKey123456789abcdef"
+          }
+        },
+        "required": [
+          "coopName",
+          "coopPublicKey"
+        ]
+      },
+      "ShareDataDto": {
+        "type": "object",
+        "properties": {
+          "coopName": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "CoopNameXYZ"
+          },
+          "encryptedData": {
+            "type": "string",
+            "description": "Зашифрованные данные для передачи",
+            "example": "encryptedData123456abcdef"
+          }
+        },
+        "required": [
+          "coopName",
+          "encryptedData"
+        ]
+      },
+      "ShareDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "ticket": {
+            "type": "string",
+            "description": "Билет для обмена данными",
+            "example": "exchangeTicket12345"
+          }
+        },
+        "required": [
+          "ticket"
+        ]
+      },
+      "CoopExchangeTicketDto": {
+        "type": "object",
+        "properties": {
+          "ticket": {
+            "type": "string",
+            "description": "Билет для обмена кооперативной информацией",
+            "example": "exchangeTicket12345"
+          }
+        },
+        "required": [
+          "ticket"
+        ]
+      },
+      "CoopJwtResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT токен доступа для взаимодействия с кооперативом",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "required": [
+          "accessToken"
+        ]
+      }
+    }
+  }
+}

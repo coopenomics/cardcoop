@@ -1,0 +1,21 @@
+{
+  "name": "cardcoop",
+  "private": true,
+  "dependencies": {
+    "@cardcoop/backend": "workspace:*",
+    "@cardcoop/client": "workspace:*",
+    "@cardcoop/frontend": "workspace:*",
+    "eslint": "^9.9.1",
+    "gh-pages": "^6.1.1",
+    "lerna": "^8.1.8",
+    "lint-staged": "^15.2.10"
+  },
+  "scripts": {
+    "dev:terminal": "lerna run dev --parallel --scope @coopenomics/terminal",
+    "dev:backend": "lerna run dev --parallel --scope cooparser-ts --scope @coopenomics/controller --scope coop-notificator",
+    "dev": "lerna run dev --parallel",
+    "testnet": "git checkout testnet && git merge dev && lerna publish prerelease && git push && git checkout dev && git merge testnet",
+    "production": "git checkout main && git merge -X theirs testnet && lerna publish  --conventional-commits --conventional-graduate && git push && git checkout dev && git merge main",
+    "docs-publish": "pnpm gh-pages --nojekyll -d docs/site --repo git@github.com:coopenomics/monocoop.git"
+  }
+}

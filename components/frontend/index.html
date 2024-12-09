@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title><%- SITE_TITLE %></title>
+    <meta property="og:title" content="<%- SITE_TITLE %>" />
+    <meta property="og:description" content="<%- SITE_DESCRIPTION %>" />
+    <meta property="og:image" content="<%- SITE_IMAGE %>" />
+  </head>
+  <body>
+    <style>
+      body {
+        margin: 0;
+        /* background: #f5f5f5; */
+      }
+
+      /* Стили для полосы прокрутки */
+      html::-webkit-scrollbar {
+        width: 0px; /* Ширина полосы прокрутки */
+      }
+
+      /* Стили для трека полосы прокрутки (фон) */
+      html::-webkit-scrollbar-track {
+        background-color: #f5f5f5;
+      }
+
+      /* Стили для ползунка полосы прокрутки */
+      html::-webkit-scrollbar-thumb {
+        background-color: #999999;
+      }
+
+      .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        z-index: 9999; /* устанавливаем z-index для размещения поверх контейнера с id="app" */
+      }
+
+      .loader-page {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        position: relative;
+        animation: rotate 2s linear infinite;
+        border-top: 3px solid black;
+        border-right: 3px solid transparent;
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <div id="app"><!-- quasar:entry-point --></div>
+    <div class="loader-container">
+      <div class="loader-page"></div>
+    </div>
+  </body>
+</html>

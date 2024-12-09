@@ -1,0 +1,7 @@
+{
+  "singleQuote": true,
+  "semi": true,
+  "plugins": ["@prettier/plugin-pug"],
+  "pugPrintWidth": 80,
+  "pugAttributeSeparator": "always"
+}
