@@ -14,9 +14,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDomainService = void 0;
 const common_1 = require("@nestjs/common");
-const user_repository_1 = require("../user.repository");
-const user_entity_1 = require("../user.entity");
+const user_repository_1 = require("../repositories/user.repository");
+const user_entity_1 = require("../entities/user.entity");
 const uuid_1 = require("uuid");
+const jwt = require("jsonwebtoken");
 let UserDomainService = class UserDomainService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -26,30 +27,55 @@ let UserDomainService = class UserDomainService {
         if (existingUser) {
             throw new Error('User already exists');
         }
-        const serverSalt = (0, uuid_1.v4)();
+        const salt = (0, uuid_1.v4)();
         const uuid = (0, uuid_1.v4)();
-        return { uuid, serverSalt };
+        return { uuid, salt };
     }
-    async completeRegistration(email, hashKey, uuid) {
-        const user = new user_entity_1.User();
-        user.email = email;
-        user.serverSalt = uuid;
-        user.hashKey = hashKey;
-        return this.userRepository.create(user);
+    async completeRegistration(email, hash_key, uuid, salt) {
+        const user = new user_entity_1.User({
+            id: (0, uuid_1.v4)(),
+            email,
+            salt,
+            hash_key,
+        });
+        await this.userRepository.create(user);
+        const access_token = this.generateAccessToken(user.id);
+        const refresh_token = this.generateRefreshToken(user.id);
+        return { access_token, refresh_token };
     }
     async initiateLogin(email) {
         const user = await this.userRepository.findByEmail(email);
         if (!user) {
             throw new Error('User not found');
         }
-        return { uuid: user.serverSalt, serverSalt: user.serverSalt };
+        return { uuid: (0, uuid_1.v4)(), salt: user.salt };
     }
-    async completeLogin(email, hashKey, uuid) {
+    async completeLogin(email, hash_key, uuid) {
         const user = await this.userRepository.findByEmail(email);
-        if (!user || user.serverSalt !== uuid || user.hashKey !== hashKey) {
+        if (!user || user.hash_key !== hash_key) {
             throw new Error('Invalid credentials');
         }
-        return user;
+        const access_token = this.generateAccessToken(user.id);
+        const refresh_token = this.generateRefreshToken(user.id);
+        return { access_token, refresh_token };
+    }
+    generateAccessToken(userId) {
+        return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    }
+    generateRefreshToken(userId) {
+        return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: '180d' });
+    }
+    async refreshAccessToken(refreshToken) {
+        try {
+            const payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
+            const userId = payload.sub;
+            const access_token = this.generateAccessToken(userId);
+            const newRefreshToken = this.generateRefreshToken(userId);
+            return { access_token, refresh_token: newRefreshToken };
+        }
+        catch (error) {
+            throw new Error('Invalid refresh token');
+        }
     }
 };
 exports.UserDomainService = UserDomainService;

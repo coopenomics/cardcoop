@@ -14,12 +14,30 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CardDomainService = void 0;
 const common_1 = require("@nestjs/common");
-const card_repository_1 = require("../card.repository");
+const card_repository_1 = require("../repositories/card.repository");
+const card_entity_1 = require("../entities/card.entity");
+const createHash_1 = require("../../utils/createHash");
+const uuid_1 = require("uuid");
 let CardDomainService = class CardDomainService {
     constructor(cardRepository) {
         this.cardRepository = cardRepository;
     }
-    async issueCard(card) {
+    async issueCard(data) {
+        const data_hash = (0, createHash_1.sha256)(data.encrypted_data);
+        const card = new card_entity_1.Card({
+            id: (0, uuid_1.v4)(),
+            username: data.username,
+            encrypted_data: data.encrypted_data,
+            encrypted_key: data.encrypted_key,
+            userId: data.userId,
+            data_hash,
+            meta: { ...data.meta, issued_at: new Date() }
+        });
+        const exist = await this.cardRepository.findByUsername(card.username);
+        if (exist && exist.userId != data.userId)
+            throw new common_1.ForbiddenException('Нельзя присвоить чужую карту!');
+        if (exist)
+            card.id = exist.id;
         return this.cardRepository.save(card);
     }
 };

@@ -26,8 +26,8 @@ export async function isValidWif(username: string, wif: string, permission: stri
   }
   const account = new Account(accountArgs)
   const activePermissions = account.permission(permission)
-  const publicKey = PrivateKey.fromString(wif).toPublic().toLegacyString();
-  return activePermissions.required_auth.keys.some((key) => key.key.toLegacyString() === publicKey);
+  const public_key = PrivateKey.fromString(wif).toPublic().toLegacyString();
+  return activePermissions.required_auth.keys.some((key) => key.key.toLegacyString() === public_key);
 }
 
 export async function getAccountInfo(account: string): Promise<any> {

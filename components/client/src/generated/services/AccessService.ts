@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CoopExchangeTicketDto } from '../models/CoopExchangeTicketDto';
-import type { CoopInfoResponseDto } from '../models/CoopInfoResponseDto';
-import type { CoopJwtResponseDto } from '../models/CoopJwtResponseDto';
-import type { PrepareShareDataDto } from '../models/PrepareShareDataDto';
-import type { ShareDataDto } from '../models/ShareDataDto';
-import type { ShareDataResponseDto } from '../models/ShareDataResponseDto';
+import type { ExchangeTicketInputDTO } from '../models/ExchangeTicketInputDTO';
+import type { CoopInfoResponseDTO } from '../models/CoopInfoResponseDTO';
+import type { ExchangeTicketResponseDTO } from '../models/ExchangeTicketResponseDTO';
+import type { PrepareShareDataInputDTO } from '../models/PrepareShareDataInputDTO';
+import type { ShareDataDTO } from '../models/ShareDataDTO';
+import type { ShareDataResponseDTO } from '../models/ShareDataResponseDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -16,12 +16,12 @@ export class AccessService {
      * prepareShareData
      * Подготовка данных для общего доступа
      * @param requestBody
-     * @returns CoopInfoResponseDto Успешная подготовка данных
+     * @returns CoopInfoResponseDTO Успешная подготовка данных
      * @throws ApiError
      */
     public static prepareShareData(
-        requestBody: PrepareShareDataDto,
-    ): CancelablePromise<CoopInfoResponseDto> {
+        requestBody: PrepareShareDataInputDTO,
+    ): CancelablePromise<CoopInfoResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/access/prepare-share-data',
@@ -33,12 +33,12 @@ export class AccessService {
      * shareData
      * Передача данных
      * @param requestBody
-     * @returns ShareDataResponseDto Успешная передача данных
+     * @returns ShareDataResponseDTO Успешная передача данных
      * @throws ApiError
      */
     public static shareData(
-        requestBody: ShareDataDto,
-    ): CancelablePromise<ShareDataResponseDto> {
+        requestBody: ShareDataDTO,
+    ): CancelablePromise<ShareDataResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/access/share-data',
@@ -50,12 +50,12 @@ export class AccessService {
      * exchangeTicketForJwt
      * Обмен тикета на JWT
      * @param requestBody
-     * @returns CoopJwtResponseDto Успешный обмен тикета на JWT
+     * @returns ExchangeTicketResponseDTO Успешный обмен тикета на JWT
      * @throws ApiError
      */
     public static exchangeTicketForJwt(
-        requestBody: CoopExchangeTicketDto,
-    ): CancelablePromise<CoopJwtResponseDto> {
+        requestBody: ExchangeTicketInputDTO,
+    ): CancelablePromise<ExchangeTicketResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/access/exchange-ticket',
@@ -67,22 +67,22 @@ export class AccessService {
      * getEncryptedData
      * Получение зашифрованных данных
      * @param username
-     * @param coopName
+     * @param coopname
      * @returns any Успешное получение зашифрованных данных
      * @throws ApiError
      */
     public static getEncryptedData(
         username: string,
-        coopName: string,
+        coopname: string,
     ): CancelablePromise<{
-        encryptedData?: string;
+        data?: string;
     }> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/access/get-encrypted-data/{username}/{coopName}',
+            url: '/access/get-encrypted-data/{username}/{coopname}',
             path: {
                 'username': username,
-                'coopName': coopName,
+                'coopname': coopname,
             },
         });
     }

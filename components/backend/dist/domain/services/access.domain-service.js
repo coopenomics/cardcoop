@@ -14,38 +14,29 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccessDomainService = void 0;
 const common_1 = require("@nestjs/common");
-const access_request_repository_1 = require("../access-request.repository");
-const uuid_1 = require("uuid");
+const access_request_repository_1 = require("../repositories/access-request.repository");
 let AccessDomainService = class AccessDomainService {
     constructor(accessRequestRepository) {
         this.accessRequestRepository = accessRequestRepository;
     }
-    async saveEncryptedData(accessRequest) {
-        const existingAccessRequest = await this.accessRequestRepository.findByUsernameAndCoopName(accessRequest.username, accessRequest.coopName);
-        if (existingAccessRequest) {
-            existingAccessRequest.encryptedData = accessRequest.encryptedData;
-            await this.accessRequestRepository.update(existingAccessRequest);
-            return existingAccessRequest.accessId;
-        }
-        else {
-            const accessId = (0, uuid_1.v4)();
-            accessRequest.accessId = accessId;
-            await this.accessRequestRepository.create(accessRequest);
-            return accessId;
-        }
+    async saveEncryptedCard(accessRequest) {
+        const existingAccessRequest = await this.accessRequestRepository.findByUsernameAndCoopName(accessRequest.username, accessRequest.coopname);
+        await this.accessRequestRepository.save(accessRequest);
+        return accessRequest.ticket;
     }
-    async getAccessRequestByAccessId(accessId) {
-        return this.accessRequestRepository.findByAccessId(accessId);
+    async getAccessRequestByTicket(ticket) {
+        const request = await this.accessRequestRepository.findByTicket(ticket);
+        return request;
     }
-    async getEncryptedData(username, coopName) {
-        const request = await this.accessRequestRepository.findByUsernameAndCoopName(username, coopName);
+    async getAccessRequestByUsernameAndCoopname(username, coopname) {
+        const request = await this.accessRequestRepository.findByUsernameAndCoopName(username, coopname);
         if (!request) {
-            throw new Error('Access not granted');
+            throw new common_1.BadRequestException('В доступе отказано по причине того, что он был отозван или не выдан');
         }
         return request;
     }
-    async revokeAccess(username, coopName) {
-        await this.accessRequestRepository.deleteByUsernameAndCoopName(username, coopName);
+    async revokeAccess(username, coopname) {
+        await this.accessRequestRepository.deleteByUsernameAndCoopName(username, coopname);
     }
     async listAccesses(username) {
         return this.accessRequestRepository.findByUsername(username);

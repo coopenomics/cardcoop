@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CoopJwtResponseDto = {
+export type ExchangeTicketResponseDTO = {
     /**
      * JWT токен доступа для взаимодействия с кооперативом
      */

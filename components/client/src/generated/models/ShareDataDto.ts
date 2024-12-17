@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ShareDataDto = {
+export type ShareDataDTO = {
     /**
      * Название кооператива
      */
-    coopName: string;
+    coopname: string;
     /**
      * Зашифрованные данные для передачи
      */
-    encryptedData: string;
+    data: string;
 };
 

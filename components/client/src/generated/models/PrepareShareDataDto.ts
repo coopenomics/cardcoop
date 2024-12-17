@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PrepareShareDataDto = {
+export type PrepareShareDataInputDTO = {
     /**
      * Название кооператива
      */
-    coopName: string;
+    coopname: string;
 };
 

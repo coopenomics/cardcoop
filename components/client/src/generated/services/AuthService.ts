@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CompleteLoginDto } from '../models/CompleteLoginDto';
-import type { CompleteRegistrationDto } from '../models/CompleteRegistrationDto';
-import type { InitiateLoginDto } from '../models/InitiateLoginDto';
-import type { InitiateRegistrationDto } from '../models/InitiateRegistrationDto';
-import type { UserResponseDto } from '../models/UserResponseDto';
+import type { CompleteLoginInputDTO } from '../models/CompleteLoginInputDTO';
+import type { CompleteRegistrationInputDTO } from '../models/CompleteRegistrationInputDTO';
+import type { InitiateLoginInputDTO } from '../models/InitiateLoginInputDTO';
+import type { InitiateRegistrationInputDTO } from '../models/InitiateRegistrationInputDTO';
+import type { CompleteLoginResponseDTO } from '../models/CompleteLoginResponseDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -15,12 +15,12 @@ export class AuthService {
      * initiateRegistration
      * Инициализация регистрации
      * @param requestBody
-     * @returns InitiateRegistrationDto Успешная инициализация регистрации
+     * @returns InitiateRegistrationInputDTO Успешная инициализация регистрации
      * @throws ApiError
      */
     public static initiateRegistration(
-        requestBody: InitiateRegistrationDto,
-    ): CancelablePromise<InitiateRegistrationDto> {
+        requestBody: InitiateRegistrationInputDTO,
+    ): CancelablePromise<InitiateRegistrationInputDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/initiate-registration',
@@ -32,12 +32,12 @@ export class AuthService {
      * completeRegistration
      * Завершение регистрации
      * @param requestBody
-     * @returns UserResponseDto Успешное завершение регистрации
+     * @returns CompleteLoginResponseDTO Успешное завершение регистрации
      * @throws ApiError
      */
     public static completeRegistration(
-        requestBody: CompleteRegistrationDto,
-    ): CancelablePromise<UserResponseDto> {
+        requestBody: CompleteRegistrationInputDTO,
+    ): CancelablePromise<CompleteLoginResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/complete-registration',
@@ -49,12 +49,12 @@ export class AuthService {
      * initiateLogin
      * Инициализация входа
      * @param requestBody
-     * @returns InitiateLoginDto Успешная инициализация входа
+     * @returns InitiateLoginInputDTO Успешная инициализация входа
      * @throws ApiError
      */
     public static initiateLogin(
-        requestBody: InitiateLoginDto,
-    ): CancelablePromise<InitiateLoginDto> {
+        requestBody: InitiateLoginInputDTO,
+    ): CancelablePromise<InitiateLoginInputDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/initiate-login',
@@ -66,12 +66,12 @@ export class AuthService {
      * completeLogin
      * Завершение входа
      * @param requestBody
-     * @returns UserResponseDto Успешное завершение входа
+     * @returns CompleteLoginResponseDTO Успешное завершение входа
      * @throws ApiError
      */
     public static completeLogin(
-        requestBody: CompleteLoginDto,
-    ): CancelablePromise<UserResponseDto> {
+        requestBody: CompleteLoginInputDTO,
+    ): CancelablePromise<CompleteLoginResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/complete-login',
@@ -83,12 +83,12 @@ export class AuthService {
      * refreshAccessToken
      * Обновление токена
      * @param authorization
-     * @returns UserResponseDto Успешное обновление токена
+     * @returns CompleteLoginResponseDTO Успешное обновление токена
      * @throws ApiError
      */
     public static refreshAccessToken(
         authorization: string,
-    ): CancelablePromise<UserResponseDto> {
+    ): CancelablePromise<CompleteLoginResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/refresh-token',

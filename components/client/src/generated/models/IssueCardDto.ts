@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type IssueCardDto = {
+export type IssueCardInputDTO = {
     /**
      * Имя пользователя, которому будет выдана карта
      */
@@ -10,11 +10,11 @@ export type IssueCardDto = {
     /**
      * Зашифрованные данные, связанные с картой
      */
-    encryptedData: string;
+    data: string;
     /**
      * Название кооператива
      */
-    coopName: string;
+    coopname: string;
     /**
      * Цифровая подпись для проверки данных
      */

@@ -1,8 +1,8 @@
 // Функция для расшифровки данных
-export const decrypt = async (encryptedData: string, password: string) => {
-  const encryptedBytes = new Uint8Array(encryptedData.length / 2);
-  for (let i = 0; i < encryptedData.length; i += 2) {
-    encryptedBytes[i / 2] = parseInt(encryptedData.substr(i, 2), 16);
+export const decrypt = async (data: string, password: string) => {
+  const encryptedBytes = new Uint8Array(data.length / 2);
+  for (let i = 0; i < data.length; i += 2) {
+    encryptedBytes[i / 2] = parseInt(data.substr(i, 2), 16);
   }
   const iv = encryptedBytes.slice(0, 16);
   const data = encryptedBytes.slice(16);
@@ -59,14 +59,14 @@ export const encrypt = async (data: string, password: string) => {
     true,
     ['encrypt', 'decrypt']
   );
-  const encryptedData = await window.crypto.subtle.encrypt(
+  const data = await window.crypto.subtle.encrypt(
     { name: 'AES-CBC', iv },
     key,
     dataBuffer
   );
-  const combined = new Uint8Array(iv.length + encryptedData.byteLength);
+  const combined = new Uint8Array(iv.length + data.byteLength);
   combined.set(iv);
-  combined.set(new Uint8Array(encryptedData), iv.length);
+  combined.set(new Uint8Array(data), iv.length);
   return Array.from(combined)
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');

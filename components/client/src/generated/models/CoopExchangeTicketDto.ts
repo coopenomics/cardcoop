@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CoopExchangeTicketDto = {
+export type ExchangeTicketInputDTO = {
     /**
      * Билет для обмена кооперативной информацией
      */

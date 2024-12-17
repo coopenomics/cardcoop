@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CompleteRegistrationDto = {
+export type CompleteRegistrationInputDTO = {
     /**
      * Email пользователя
      */
@@ -10,7 +10,7 @@ export type CompleteRegistrationDto = {
     /**
      * Хэш-ключ для завершения регистрации
      */
-    hashKey: string;
+    hash_key: string;
     /**
      * Уникальный идентификатор запроса
      */

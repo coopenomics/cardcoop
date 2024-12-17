@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ShareDataResponseDto = {
+export type ShareDataResponseDTO = {
     /**
      * Билет для обмена данными
      */

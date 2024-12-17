@@ -11,7 +11,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InitiateRegistrationDto"
+                "$ref": "#/components/schemas/InitiateRegistrationInputDTO"
               }
             }
           }
@@ -22,7 +22,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InitiateRegistrationDto"
+                  "$ref": "#/components/schemas/InitiateRegistrationInputDTO"
                 }
               }
             }
@@ -44,7 +44,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompleteRegistrationDto"
+                "$ref": "#/components/schemas/CompleteRegistrationInputDTO"
               }
             }
           }
@@ -55,7 +55,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
+                  "$ref": "#/components/schemas/CompleteLoginResponseDTO"
                 }
               }
             }
@@ -77,7 +77,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InitiateLoginDto"
+                "$ref": "#/components/schemas/InitiateLoginInputDTO"
               }
             }
           }
@@ -88,7 +88,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InitiateLoginDto"
+                  "$ref": "#/components/schemas/InitiateLoginInputDTO"
                 }
               }
             }
@@ -110,7 +110,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompleteLoginDto"
+                "$ref": "#/components/schemas/CompleteLoginInputDTO"
               }
             }
           }
@@ -121,7 +121,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
+                  "$ref": "#/components/schemas/CompleteLoginResponseDTO"
                 }
               }
             }
@@ -137,23 +137,24 @@
       "post": {
         "description": "Обновление токена",
         "operationId": "refreshAccessToken",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenInputDTO"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Успешное обновление токена",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
+                  "$ref": "#/components/schemas/CompleteLoginResponseDTO"
                 }
               }
             }
@@ -200,7 +201,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IssueCardDto"
+                "$ref": "#/components/schemas/IssueCardInputDTO"
               }
             }
           }
@@ -211,13 +212,34 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CardResponseDto"
+                  "$ref": "#/components/schemas/IssueCardResponseDTO"
                 }
               }
             }
           }
         },
         "summary": "issueCard",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
+    "/card/schema": {
+      "get": {
+        "operationId": "CardController_getSchema",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Получить json-схему карты",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaResponseDTO"
+                }
+              }
+            }
+          }
+        },
         "tags": [
           "Card"
         ]
@@ -233,7 +255,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PrepareShareDataDto"
+                "$ref": "#/components/schemas/PrepareShareDataInputDTO"
               }
             }
           }
@@ -244,7 +266,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CoopInfoResponseDto"
+                  "$ref": "#/components/schemas/CoopInfoResponseDTO"
                 }
               }
             }
@@ -266,7 +288,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ShareDataDto"
+                "$ref": "#/components/schemas/ShareDataDTO"
               }
             }
           }
@@ -277,7 +299,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ShareDataResponseDto"
+                  "$ref": "#/components/schemas/ShareDataResponseDTO"
                 }
               }
             }
@@ -299,7 +321,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CoopExchangeTicketDto"
+                "$ref": "#/components/schemas/ExchangeTicketInputDTO"
               }
             }
           }
@@ -310,7 +332,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CoopJwtResponseDto"
+                  "$ref": "#/components/schemas/ExchangeTicketResponseDTO"
                 }
               }
             }
@@ -322,7 +344,7 @@
         ]
       }
     },
-    "/access/get-encrypted-data/{username}/{coopName}": {
+    "/access/get-encrypted-data/{username}/{coopname}": {
       "get": {
         "description": "Получение зашифрованных данных",
         "operationId": "getEncryptedData",
@@ -336,7 +358,7 @@
             }
           },
           {
-            "name": "coopName",
+            "name": "coopname",
             "required": true,
             "in": "path",
             "schema": {
@@ -350,12 +372,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "encryptedData": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "#/components/schemas/EncryptedDataResponseDTO"
                 }
               }
             }
@@ -369,13 +386,17 @@
     }
   },
   "info": {
-    "title": "Auth Backend",
+    "title": "CARD.COOP",
     "description": "API для авторизации и управления пользователями",
     "version": "1.0",
     "contact": {}
   },
   "tags": [],
-  "servers": [],
+  "servers": [
+    {
+      "url": "http://localhost:3015"
+    }
+  ],
   "components": {
     "securitySchemes": {
       "bearer": {
@@ -385,7 +406,7 @@
       }
     },
     "schemas": {
-      "InitiateRegistrationDto": {
+      "InitiateRegistrationInputDTO": {
         "type": "object",
         "properties": {
           "email": {
@@ -398,7 +419,7 @@
           "email"
         ]
       },
-      "CompleteRegistrationDto": {
+      "CompleteRegistrationInputDTO": {
         "type": "object",
         "properties": {
           "email": {
@@ -406,7 +427,7 @@
             "description": "Email пользователя",
             "example": "user@example.com"
           },
-          "hashKey": {
+          "hash_key": {
             "type": "string",
             "description": "Хэш-ключ для завершения регистрации",
             "example": "secureHash123"
@@ -415,34 +436,40 @@
             "type": "string",
             "description": "Уникальный идентификатор запроса",
             "example": "uuid-123e4567-e89b-12d3-a456-426614174000"
+          },
+          "salt": {
+            "type": "string",
+            "description": "Серверная соль для защиты данных",
+            "example": "random-server-salt-example"
           }
         },
         "required": [
           "email",
-          "hashKey",
-          "uuid"
+          "hash_key",
+          "uuid",
+          "salt"
         ]
       },
-      "UserResponseDto": {
+      "CompleteLoginResponseDTO": {
         "type": "object",
         "properties": {
-          "accessToken": {
+          "access_token": {
             "type": "string",
             "description": "Токен доступа для авторизации",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           },
-          "refreshToken": {
+          "refresh_token": {
             "type": "string",
             "description": "Токен для обновления доступа",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           }
         },
         "required": [
-          "accessToken",
-          "refreshToken"
+          "access_token",
+          "refresh_token"
         ]
       },
-      "InitiateLoginDto": {
+      "InitiateLoginInputDTO": {
         "type": "object",
         "properties": {
           "email": {
@@ -455,7 +482,7 @@
           "email"
         ]
       },
-      "CompleteLoginDto": {
+      "CompleteLoginInputDTO": {
         "type": "object",
         "properties": {
           "email": {
@@ -463,7 +490,7 @@
             "description": "Email пользователя",
             "example": "user@example.com"
           },
-          "hashKey": {
+          "hash_key": {
             "type": "string",
             "description": "Хэш-ключ для завершения входа",
             "example": "secureHash123"
@@ -476,97 +503,239 @@
         },
         "required": [
           "email",
-          "hashKey",
+          "hash_key",
           "uuid"
         ]
       },
-      "IssueCardDto": {
+      "RefreshTokenInputDTO": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh-токен для обновления токена доступа",
+            "example": "refreshtoken123"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
+      "CardMetaDTO": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number",
+            "description": "Версия модели данных карты",
+            "example": 1
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "IssueCardInputDTO": {
         "type": "object",
         "properties": {
           "username": {
             "type": "string",
             "description": "Имя пользователя, которому будет выдана карта",
-            "example": "john_doe"
+            "example": "user123"
           },
-          "encryptedData": {
+          "encrypted_key": {
+            "type": "string",
+            "description": "Зашифрованный приватный ключ",
+            "example": "encryptedKey123456abcdef"
+          },
+          "encrypted_data": {
             "type": "string",
             "description": "Зашифрованные данные, связанные с картой",
             "example": "encryptedData123456abcdef"
           },
-          "coopName": {
-            "type": "string",
-            "description": "Название кооператива",
-            "example": "CoopNameXYZ"
-          },
-          "signature": {
-            "type": "string",
-            "description": "Цифровая подпись для проверки данных",
-            "example": "signatureBase64Encoded12345"
+          "meta": {
+            "description": "Метаданные, связанные с картой",
+            "example": {
+              "version": 1
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CardMetaDTO"
+              }
+            ]
           }
         },
         "required": [
           "username",
-          "encryptedData",
-          "coopName",
-          "signature"
+          "encrypted_key",
+          "encrypted_data",
+          "meta"
         ]
       },
-      "CardResponseDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "PrepareShareDataDto": {
+      "IssueCardResponseDTO": {
         "type": "object",
         "properties": {
-          "coopName": {
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор карты",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя, связанного с картой",
+            "example": "username123"
+          }
+        },
+        "required": [
+          "id",
+          "username"
+        ]
+      },
+      "SchemaItem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "object",
+            "description": "Type of the schema"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Properties of the schema"
+          },
+          "required": {
+            "example": [
+              "field1",
+              "field2"
+            ],
+            "description": "Required fields",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "properties"
+        ]
+      },
+      "SchemaResponseDTO": {
+        "type": "object",
+        "properties": {
+          "oneOf": {
+            "description": "List of schema variants based on type",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SchemaItem"
+            }
+          }
+        },
+        "required": [
+          "oneOf"
+        ]
+      },
+      "PrepareShareDataInputDTO": {
+        "type": "object",
+        "properties": {
+          "coopname": {
             "type": "string",
             "description": "Название кооператива",
             "example": "CoopNameXYZ"
           }
         },
         "required": [
-          "coopName"
+          "coopname"
         ]
       },
-      "CoopInfoResponseDto": {
+      "CoopInfoResponseDTO": {
         "type": "object",
         "properties": {
-          "coopName": {
+          "coopname": {
             "type": "string",
-            "description": "Название кооператива",
-            "example": "CoopNameXYZ"
+            "description": "Имя аккаунта кооператива",
+            "example": "voskhod"
           },
-          "coopPublicKey": {
+          "public_key": {
             "type": "string",
             "description": "Публичный ключ кооператива",
-            "example": "publicKey123456789abcdef"
+            "example": "EOS123456789abcdef"
+          },
+          "announce": {
+            "type": "string",
+            "description": "Публичное наименование кооператива",
+            "example": "Потребительский Кооператив \"РОМАШКА\""
           }
         },
         "required": [
-          "coopName",
-          "coopPublicKey"
+          "coopname",
+          "public_key",
+          "announce"
         ]
       },
-      "ShareDataDto": {
+      "AccessMetaInputDTO": {
         "type": "object",
         "properties": {
-          "coopName": {
+          "device_id": {
             "type": "string",
-            "description": "Название кооператива",
-            "example": "CoopNameXYZ"
+            "description": "Идентификатор устройства пользователя",
+            "example": "device12345"
           },
-          "encryptedData": {
+          "device_type": {
+            "type": "string",
+            "description": "Тип устройства пользователя",
+            "example": "desktop"
+          },
+          "operating_system": {
+            "type": "string",
+            "description": "Операционная система устройства",
+            "example": "Windows 10"
+          },
+          "browser": {
+            "type": "string",
+            "description": "Браузер, через который был предоставлен доступ",
+            "example": "Chrome 114"
+          }
+        }
+      },
+      "ShareDataDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя аккаунта пользователя",
+            "example": "username"
+          },
+          "coopname": {
+            "type": "string",
+            "description": "Имя аккаунта кооператива",
+            "example": "voskhod"
+          },
+          "encrypted_data": {
             "type": "string",
             "description": "Зашифрованные данные для передачи",
             "example": "encryptedData123456abcdef"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "Публичный ключ кооператива необходимый для дешифровки",
+            "example": "EOSPublicKey123456abcdef"
+          },
+          "meta": {
+            "description": "Не обязательные данные для идентификации устройства пользователя",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccessMetaInputDTO"
+              }
+            ]
           }
         },
         "required": [
-          "coopName",
-          "encryptedData"
+          "username",
+          "coopname",
+          "encrypted_data",
+          "public_key"
         ]
       },
-      "ShareDataResponseDto": {
+      "ShareDataResponseDTO": {
         "type": "object",
         "properties": {
           "ticket": {
@@ -579,7 +748,7 @@
           "ticket"
         ]
       },
-      "CoopExchangeTicketDto": {
+      "ExchangeTicketInputDTO": {
         "type": "object",
         "properties": {
           "ticket": {
@@ -592,17 +761,61 @@
           "ticket"
         ]
       },
-      "CoopJwtResponseDto": {
+      "ExchangeTicketResponseDTO": {
         "type": "object",
         "properties": {
-          "accessToken": {
+          "access_token": {
             "type": "string",
             "description": "JWT токен доступа для взаимодействия с кооперативом",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           }
         },
         "required": [
-          "accessToken"
+          "access_token"
+        ]
+      },
+      "Function": {
+        "type": "object",
+        "properties": {}
+      },
+      "EncryptedDataResponseDTO": {
+        "type": "object",
+        "properties": {
+          "encrypted_data": {
+            "type": "string",
+            "description": "Зашифрованные данные",
+            "example": "encrypted_string_example"
+          },
+          "coopname": {
+            "type": "string",
+            "description": "Имя кооператива",
+            "example": "voskhod"
+          },
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "example": "user123"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "Публичный ключ",
+            "example": "public_key_example"
+          },
+          "meta": {
+            "description": "Метаданные доступа",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Function"
+              }
+            ]
+          }
+        },
+        "required": [
+          "encrypted_data",
+          "coopname",
+          "username",
+          "public_key",
+          "meta"
         ]
       }
     }

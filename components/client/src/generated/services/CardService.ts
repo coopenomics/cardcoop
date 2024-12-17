@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CardResponseDto } from '../models/CardResponseDto';
-import type { IssueCardDto } from '../models/IssueCardDto';
+import type { IssueCardResponseDTO } from '../models/IssueCardResponseDTO';
+import type { IssueCardInputDTO } from '../models/IssueCardInputDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -12,12 +12,12 @@ export class CardService {
      * issueCard
      * Выпуск карты
      * @param requestBody
-     * @returns CardResponseDto Успешный выпуск карты
+     * @returns IssueCardResponseDTO Успешный выпуск карты
      * @throws ApiError
      */
     public static issueCard(
-        requestBody: IssueCardDto,
-    ): CancelablePromise<CardResponseDto> {
+        requestBody: IssueCardInputDTO,
+    ): CancelablePromise<IssueCardResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/card/issue',

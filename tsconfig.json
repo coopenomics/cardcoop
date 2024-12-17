@@ -6,6 +6,7 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "strict": true,
+    "noUncheckedIndexedAccess": false,
     "strictNullChecks": true,
     "esModuleInterop": true,
     "skipDefaultLibCheck": true,

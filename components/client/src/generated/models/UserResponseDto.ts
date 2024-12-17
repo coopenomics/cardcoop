@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserResponseDto = {
+export type CompleteLoginResponseDTO = {
     /**
      * Токен доступа для авторизации
      */

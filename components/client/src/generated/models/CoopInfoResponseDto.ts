@@ -2,14 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CoopInfoResponseDto = {
+export type CoopInfoResponseDTO = {
     /**
      * Название кооператива
      */
-    coopName: string;
+    coopname: string;
     /**
      * Публичный ключ кооператива
      */
-    coopPublicKey: string;
+    public_key: string;
 };
 

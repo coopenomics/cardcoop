@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type InitiateLoginDto = {
+export type InitiateLoginInputDTO = {
     /**
      * Email пользователя
      */

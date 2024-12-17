@@ -42,10 +42,10 @@ export const useGlobalStore = defineStore('global', (): IGlobalStore => {
 
     try {
       // Получите зашифрованный ключ и токены из хранилища
-      const encryptedKey = await getFromIndexedDB(
+      const encrypted_key = await getFromIndexedDB(
         COOPNAME,
         'store',
-        'encryptedKey'
+        'encrypted_key'
       );
       const encryptedTokens = await getFromIndexedDB(
         COOPNAME,
@@ -59,12 +59,12 @@ export const useGlobalStore = defineStore('global', (): IGlobalStore => {
       );
 
       // Если ключ или токены не найдены, выбросите ошибку
-      if (!encryptedKey || !encryptedTokens || !encryptedUsername) {
+      if (!encrypted_key || !encryptedTokens || !encryptedUsername) {
         return;
       }
 
       // Расшифруйте ключ и токены
-      const decryptedKey = await decrypt(encryptedKey, password);
+      const decryptedKey = await decrypt(encrypted_key, password);
       const decryptedTokens = await decrypt(encryptedTokens, password);
       const decryptedUsername = await decrypt(encryptedUsername, password);
 
@@ -85,7 +85,7 @@ export const useGlobalStore = defineStore('global', (): IGlobalStore => {
 
 
     } catch (error: any) {
-      await setToIndexedDB(COOPNAME, 'store', 'encryptedKey', '');
+      await setToIndexedDB(COOPNAME, 'store', 'encrypted_key', '');
       await setToIndexedDB(COOPNAME, 'store', 'encryptedUsername', '');
       await setToIndexedDB(COOPNAME, 'store', 'encryptedTokens', '');
       throw new Error('Ошибка авторизации. Войдите повторно.');
@@ -93,10 +93,10 @@ export const useGlobalStore = defineStore('global', (): IGlobalStore => {
   };
 
   const setWif = async (newUsername: string, key: string) => {
-    const encryptedKey = await encrypt(key, password);
+    const encrypted_key = await encrypt(key, password);
     const encryptedUsername = await encrypt(newUsername, password);
 
-    await setToIndexedDB(COOPNAME, 'store', 'encryptedKey', encryptedKey);
+    await setToIndexedDB(COOPNAME, 'store', 'encrypted_key', encrypted_key);
     await setToIndexedDB(
       COOPNAME,
       'store',
@@ -119,7 +119,7 @@ export const useGlobalStore = defineStore('global', (): IGlobalStore => {
     wif.value = undefined;
     hasCreditials.value = false;
     tokens.value = undefined;
-    await setToIndexedDB(COOPNAME, 'store', 'encryptedKey', '');
+    await setToIndexedDB(COOPNAME, 'store', 'encrypted_key', '');
     await setToIndexedDB(COOPNAME, 'store', 'encryptedUsername', '');
     await setToIndexedDB(COOPNAME, 'store', 'encryptedTokens', '');
   };

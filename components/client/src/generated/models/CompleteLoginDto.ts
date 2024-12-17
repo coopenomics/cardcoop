@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CompleteLoginDto = {
+export type CompleteLoginInputDTO = {
     /**
      * Email пользователя
      */
@@ -10,7 +10,7 @@ export type CompleteLoginDto = {
     /**
      * Хэш-ключ для завершения входа
      */
-    hashKey: string;
+    hash_key: string;
     /**
      * Уникальный идентификатор запроса
      */
