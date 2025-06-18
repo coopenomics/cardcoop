@@ -3,20 +3,114 @@ import { IssueCardResponseDTO } from '../dto/issue-card-response.dto';
 import { IssueCardInputDTO } from '../dto/issue-card-input.dto';
 import { CardInteractor } from 'src/domain/interactors/card.interactor';
 import type { SchemaResponseDTO } from '../dto/get-card-schema-response.dto';
+import type { GetUserCardsResponseDTO } from '../dto/get-user-cards-response.dto';
+import type { PrivateDataResponseDTO } from '../dto/private-data-response.dto';
 
+/**
+ * Сервис приложения для работы с картами пайщиков
+ */
 @Injectable()
 export class CardService {
   constructor(private readonly cardInteractor: CardInteractor) {}
-  async getJsonSchema(): Promise<SchemaResponseDTO>{
-    return this.cardInteractor.getCardSchema() as SchemaResponseDTO
+
+  /**
+   * Получает схему данных карты
+   *
+   * @returns JSON-схема карты
+   */
+  async getJsonSchema(): Promise<SchemaResponseDTO> {
+    return this.cardInteractor.getCardSchema() as SchemaResponseDTO;
   }
 
-  async issueCard(dto: IssueCardInputDTO, userId: string): Promise<IssueCardResponseDTO> {
-    const savedCard = await this.cardInteractor.issueCard({userId, ...dto});
+  /**
+   * Выпускает новую карту пайщика
+   *
+   * @param dto Данные для выпуска карты
+   * @param user_id ID пользователя
+   * @returns Информация о выпущенной карте
+   */
+  async issueCard(
+    dto: IssueCardInputDTO,
+    user_id: string,
+  ): Promise<IssueCardResponseDTO> {
+    const savedCard = await this.cardInteractor.issueCard({
+      user_id,
+      ...dto,
+    });
 
     return {
       id: savedCard.id,
       username: savedCard.username,
+      coop_name: savedCard.coop_name,
+      issued_at: savedCard.meta.issued_at,
+      card_type: savedCard.meta.card_type,
+      is_active: savedCard.meta.is_active,
+    };
+  }
+
+  /**
+   * Получает все карты пользователя
+   *
+   * @param user_id ID пользователя
+   * @returns Массив карт пользователя
+   */
+  async getUserCards(user_id: string): Promise<GetUserCardsResponseDTO[]> {
+    const cards = await this.cardInteractor.getUserCards(user_id);
+
+    return cards.map((card) => ({
+      id: card.id,
+      username: card.username,
+      coop_name: card.coop_name,
+      issued_at: card.meta.issued_at,
+      card_type: card.meta.card_type,
+      is_active: card.meta.is_active,
+    }));
+  }
+
+  /**
+   * Получает приватные данные пользователя по ID карты
+   *
+   * @param card_id ID карты
+   * @param user_id ID пользователя
+   * @returns Зашифрованные приватные данные
+   */
+  async getPrivateDataByCardId(
+    card_id: string,
+    user_id: string,
+  ): Promise<PrivateDataResponseDTO> {
+    const privateData = await this.cardInteractor.getPrivateDataByCardId(
+      card_id,
+      user_id,
+    );
+
+    return {
+      encrypted_data: privateData.encrypted_data,
+      data_hash: privateData.data_hash,
+      version: privateData.meta.version,
+      data_type: privateData.meta.data_type,
+    };
+  }
+
+  /**
+   * Деактивирует карту пользователя
+   *
+   * @param card_id ID карты
+   * @param user_id ID пользователя
+   * @returns Информация об обновленной карте
+   */
+  async deactivateCard(
+    card_id: string,
+    user_id: string,
+  ): Promise<IssueCardResponseDTO> {
+    const card = await this.cardInteractor.deactivateCard(card_id, user_id);
+
+    return {
+      id: card.id,
+      username: card.username,
+      coop_name: card.coop_name,
+      issued_at: card.meta.issued_at,
+      card_type: card.meta.card_type,
+      is_active: card.meta.is_active,
     };
   }
 }

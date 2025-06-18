@@ -170,16 +170,17 @@
       "post": {
         "description": "Выход",
         "operationId": "logout",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutInputDTO"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Успешный выход"
@@ -226,7 +227,8 @@
     },
     "/card/schema": {
       "get": {
-        "operationId": "CardController_getSchema",
+        "description": "Извлечение актуальной схемы карты",
+        "operationId": "getSchema",
         "parameters": [],
         "responses": {
           "200": {
@@ -240,6 +242,99 @@
             }
           }
         },
+        "summary": "getSchema",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
+    "/card/user": {
+      "get": {
+        "description": "Получение всех карт пользователя",
+        "operationId": "getUserCards",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список карт пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetUserCardsResponseDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "getUserCards",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
+    "/card/{card_id}/private-data": {
+      "get": {
+        "description": "Получение приватных данных по ID карты",
+        "operationId": "getPrivateData",
+        "parameters": [
+          {
+            "name": "card_id",
+            "required": true,
+            "in": "path",
+            "description": "ID карты",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Приватные данные пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateDataResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "getPrivateData",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
+    "/card/{card_id}": {
+      "delete": {
+        "description": "Деактивация карты",
+        "operationId": "deactivateCard",
+        "parameters": [
+          {
+            "name": "card_id",
+            "required": true,
+            "in": "path",
+            "description": "ID карты для деактивации",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Карта успешно деактивирована",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueCardResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "deactivateCard",
         "tags": [
           "Card"
         ]
@@ -520,6 +615,25 @@
           "refresh_token"
         ]
       },
+      "LogoutInputDTO": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Access-токен для удаления",
+            "example": "accesstoken123"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh-токен для удаления",
+            "example": "refreshtoken123"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token"
+        ]
+      },
       "CardMetaDTO": {
         "type": "object",
         "properties": {
@@ -527,10 +641,28 @@
             "type": "number",
             "description": "Версия модели данных карты",
             "example": 1
+          },
+          "card_type": {
+            "type": "string",
+            "description": "Тип карты",
+            "example": "standard"
+          },
+          "valid_until": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата окончания действия карты",
+            "example": "2030-01-01"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Активна ли карта",
+            "example": true,
+            "default": true
           }
         },
         "required": [
-          "version"
+          "version",
+          "is_active"
         ]
       },
       "IssueCardInputDTO": {
@@ -540,6 +672,11 @@
             "type": "string",
             "description": "Имя пользователя, которому будет выдана карта",
             "example": "user123"
+          },
+          "coop_name": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "coop_example"
           },
           "encrypted_key": {
             "type": "string",
@@ -554,7 +691,8 @@
           "meta": {
             "description": "Метаданные, связанные с картой",
             "example": {
-              "version": 1
+              "version": 1,
+              "card_type": "standard"
             },
             "allOf": [
               {
@@ -565,6 +703,7 @@
         },
         "required": [
           "username",
+          "coop_name",
           "encrypted_key",
           "encrypted_data",
           "meta"
@@ -582,11 +721,36 @@
             "type": "string",
             "description": "Имя пользователя, связанного с картой",
             "example": "username123"
+          },
+          "coop_name": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "coop_example"
+          },
+          "issued_at": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата выпуска карты",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "card_type": {
+            "type": "string",
+            "description": "Тип карты",
+            "example": "standard"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Активна ли карта",
+            "example": true
           }
         },
         "required": [
           "id",
-          "username"
+          "username",
+          "coop_name",
+          "issued_at",
+          "card_type",
+          "is_active"
         ]
       },
       "SchemaItem": {
@@ -631,6 +795,81 @@
         },
         "required": [
           "oneOf"
+        ]
+      },
+      "GetUserCardsResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор карты",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя в кооперативе",
+            "example": "username123"
+          },
+          "coop_name": {
+            "type": "string",
+            "description": "Название кооператива",
+            "example": "coop_example"
+          },
+          "issued_at": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата выпуска карты",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "card_type": {
+            "type": "string",
+            "description": "Тип карты",
+            "example": "standard"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Активна ли карта",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "coop_name",
+          "issued_at",
+          "card_type",
+          "is_active"
+        ]
+      },
+      "PrivateDataResponseDTO": {
+        "type": "object",
+        "properties": {
+          "encrypted_data": {
+            "type": "string",
+            "description": "Зашифрованные данные пользователя",
+            "example": "encrypted-data-string"
+          },
+          "data_hash": {
+            "type": "string",
+            "description": "Хеш данных для верификации",
+            "example": "data-hash-string"
+          },
+          "version": {
+            "type": "number",
+            "description": "Версия формата данных",
+            "example": 1
+          },
+          "data_type": {
+            "type": "string",
+            "description": "Тип приватных данных",
+            "example": "personal"
+          }
+        },
+        "required": [
+          "encrypted_data",
+          "data_hash",
+          "version",
+          "data_type"
         ]
       },
       "PrepareShareDataInputDTO": {

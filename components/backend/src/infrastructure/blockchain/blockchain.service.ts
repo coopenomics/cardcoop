@@ -4,13 +4,14 @@ import { APIClient } from '@wharfkit/antelope';
 import { Table } from '@wharfkit/contract';
 import type { BlockchainAccountInterface, IndexPosition } from './blockchain.types';
 import { PublicKey } from '@wharfkit/antelope';
+import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class BlockchainService {
   private readonly apiClient: APIClient;
   
-  constructor() {
-    this.apiClient = new APIClient({ url: process.env.CHAIN_RPC });
+  constructor(private readonly config: ConfigService) {
+    this.apiClient = new APIClient({ url: this.config.chainRpc });
   }
   
   public async getAccountPublicKey(username: string): Promise<string> {

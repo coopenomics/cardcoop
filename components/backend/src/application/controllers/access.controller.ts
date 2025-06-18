@@ -38,8 +38,8 @@ export class AccessController {
     type: ShareDataResponseDTO,
   })
   async shareData(@Body() data: ShareDataDTO, @Request() req): Promise<ShareDataResponseDTO> {
-    const userId = req.user.userId;
-    return this.accessService.shareData(userId, data);
+    const user_id = req.user.user_id;
+    return this.accessService.shareData(user_id, data);
   }
 
   @Post('exchange-ticket')

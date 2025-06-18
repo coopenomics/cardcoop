@@ -12,8 +12,8 @@ export class InitiateRegistrationResponseDTO {
     example: 'random-server-salt-example',
   })
   salt!: string;
-  
-  constructor(data: InitiateRegistrationResponseDTO){
-    Object.assign(this, data)
+
+  constructor(data: InitiateRegistrationResponseDTO) {
+    Object.assign(this, data);
   }
 }

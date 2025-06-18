@@ -2,7 +2,7 @@
 div
 
   q-card.q-pa-md.signup(flat)
-    p.text-h6.text-center.q-mb-md ВСТУПИТЬ В ПАЙЩИКИ
+    p.text-h6.text-center.q-mb-md.q-mt-sm ПОЛУЧИТЬ КАРТУ ПАЙЩИКА
     q-stepper(v-model='store.step', vertical, animated, flat, done-color='primary')
       EmailInput
 
@@ -11,8 +11,10 @@ div
       GenerateAccount
 
       Welcome(v-model:step='store.step')
-  q-btn(@click="out" dense size="sm" flat) начать с начала
 
+  div.text-right
+    q-btn(@click="signin" dense size="sm" flat) есть карта? войти
+    //- q-btn(@click="reload" dense size="sm" flat) начать с начала
 
 </template>
 
@@ -22,16 +24,16 @@ import EmailInput from './EmailInput.vue'
 import GenerateAccount from './GenerateAccount.vue'
 import SetUserData from './SetUserData.vue'
 import Welcome from './Welcome.vue'
-
 import { COOPNAME } from 'src/shared/config'
 import { useCurrentUserStore } from 'src/entities/User'
-const currentUser = useCurrentUserStore()
-
 import { useRegistratorStore } from 'src/entities/Registrator'
-import { useLogoutUser } from 'src/features/Registrator/Logout'
 import { useSessionStore } from 'src/entities/Session'
 import { useWalletStore } from 'src/entities/Wallet'
+import { useRouter } from 'vue-router'
+import { useLogoutUser } from 'src/features/Registrator/Logout'
 
+const router = useRouter()
+const currentUser = useCurrentUserStore()
 const { state, clearUserData } = useRegistratorStore()
 const session = useSessionStore()
 const store = state
@@ -46,17 +48,19 @@ onMounted(() => {
       return
     }
   }
-
 })
 
-
-const out = async () => {
+const reload = async () => {
   const { logout } = useLogoutUser()
   await logout()
 
   clearLocalStorage()
 
   window.location.reload()
+}
+
+const signin = async () => {
+  router.push({name: 'signin'})
 }
 
 const clearLocalStorage = () => {

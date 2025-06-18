@@ -12,8 +12,8 @@ export class InitiateLoginResponseDTO {
     example: 'random-server-salt-example',
   })
   salt!: string;
-  
-  constructor(data: InitiateLoginResponseDTO){
-    Object.assign(this, data)
+
+  constructor(data: InitiateLoginResponseDTO) {
+    Object.assign(this, data);
   }
 }

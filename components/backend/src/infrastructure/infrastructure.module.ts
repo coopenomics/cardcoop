@@ -1,15 +1,18 @@
 import { Module } from "@nestjs/common";
 import { BlockchainModule } from "./blockchain/blockchain.module";
 import { DatabaseModule } from "./database/database.module";
+import { ConfigModule } from "./config/config.module";
 
 @Module({
   imports: [
     BlockchainModule,
-    DatabaseModule
+    DatabaseModule,
+    ConfigModule
   ],
   exports: [
     BlockchainModule,
-    DatabaseModule
+    DatabaseModule,
+    ConfigModule
   ],
 })
 

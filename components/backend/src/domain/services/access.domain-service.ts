@@ -1,7 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ACCESS_REQUEST_REPOSITORY, AccessRequestRepository } from '../repositories/access-request.repository';
 import { AccessRequest } from '../entities/access-request.entity';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AccessDomainService {

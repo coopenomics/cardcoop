@@ -4,12 +4,16 @@
 /* eslint-disable */
 export type CoopInfoResponseDTO = {
     /**
-     * Название кооператива
+     * Имя аккаунта кооператива
      */
     coopname: string;
     /**
      * Публичный ключ кооператива
      */
     public_key: string;
+    /**
+     * Публичное наименование кооператива
+     */
+    announce: string;
 };
 

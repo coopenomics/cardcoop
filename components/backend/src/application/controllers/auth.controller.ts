@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Headers, UseGuards } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { CompleteLoginResponseDTO } from '../dto/complete-login-response.dto';
 import { CompleteLoginInputDTO } from '../dto/complete-login-input.dto';
@@ -8,6 +8,10 @@ import { InitiateRegistrationInputDTO } from '../dto/initiate-registration-input
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Swagger } from '../auth/decorators/swagger.decorator';
 import { RefreshTokenInputDTO } from '../dto/refresh-token-input.dto';
+import { LogoutInputDTO } from '../dto/logout-input.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { VerifyEmailInputDTO } from '../dto/verify-email-input.dto';
+import { VerifyEmailResponseDTO } from '../dto/verify-email-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -32,7 +36,9 @@ export class AuthController {
     description: 'Успешное завершение регистрации',
     type: CompleteLoginResponseDTO,
   })
-  async completeRegistration(@Body() dto: CompleteRegistrationInputDTO): Promise<CompleteLoginResponseDTO> {
+  async completeRegistration(
+    @Body() dto: CompleteRegistrationInputDTO,
+  ): Promise<CompleteLoginResponseDTO> {
     return this.authService.completeRegistration(dto);
   }
 
@@ -54,10 +60,12 @@ export class AuthController {
     description: 'Успешное завершение входа',
     type: CompleteLoginResponseDTO,
   })
-  async completeLogin(@Body() dto: CompleteLoginInputDTO): Promise<CompleteLoginResponseDTO> {
+  async completeLogin(
+    @Body() dto: CompleteLoginInputDTO,
+  ): Promise<CompleteLoginResponseDTO> {
     return this.authService.completeLogin(dto);
   }
-  
+
   @Post('refresh-token')
   @Swagger('Обновление токена')
   @ApiResponse({
@@ -65,18 +73,33 @@ export class AuthController {
     description: 'Успешное обновление токена',
     type: CompleteLoginResponseDTO,
   })
-  async refreshAccessToken(@Body() dto: RefreshTokenInputDTO): Promise<CompleteLoginResponseDTO> {
+  async refreshAccessToken(
+    @Body() dto: RefreshTokenInputDTO,
+  ): Promise<CompleteLoginResponseDTO> {
     return this.authService.refreshAccessToken(dto.refresh_token);
   }
 
   @Post('logout')
+  @UseGuards(JwtAuthGuard)
   @Swagger('Выход')
   @ApiResponse({
     status: 200,
     description: 'Успешный выход',
   })
-  async logout(@Headers('Authorization') authHeader: string): Promise<void> {
-    const refreshToken = authHeader.split(' ')[1];
-    await this.authService.logout(refreshToken);
+  async logout(@Body() dto: LogoutInputDTO): Promise<void> {
+    await this.authService.logout(dto);
+  }
+
+  @Post('verify-email')
+  @Swagger('Подтверждение email кодом')
+  @ApiResponse({
+    status: 201,
+    description: 'Email успешно подтвержден',
+    type: VerifyEmailResponseDTO,
+  })
+  async verifyEmail(
+    @Body() dto: VerifyEmailInputDTO,
+  ): Promise<VerifyEmailResponseDTO> {
+    return this.authService.verifyEmail(dto);
   }
 }

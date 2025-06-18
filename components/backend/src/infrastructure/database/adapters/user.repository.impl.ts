@@ -1,29 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../../domain/entities/user.entity';
 import { UserRepository } from '../../../domain/repositories/user.repository';
+import { UserORM } from '../entities/user.entity';
+import { User } from 'src/domain/entities/user.entity';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(
-    @InjectRepository(User)
-    private readonly repository: Repository<User>,
+    @InjectRepository(UserORM)
+    private readonly repository: Repository<UserORM>,
   ) {}
 
   async create(user: Partial<User>): Promise<User> {
-    return this.repository.save(user);
+    const result = await this.repository.save(user);
+    return new User(result)
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.repository.findOne({ where: { email } });
+    const result = await this.repository.findOne({ where: { email } });
+    if (result)
+      return new User(result)
+    else return null
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.repository.findOne({ where: { id } });
+    const result = await this.repository.findOne({ where: { id } });
+    if (result)
+      return new User(result)
+    else return null
   }
 
   async update(user: User): Promise<User> {
-    return this.repository.save(user);
+    const result = await this.repository.save(user);
+    return new User(result)
   }
 }

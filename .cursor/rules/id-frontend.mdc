@@ -1,0 +1,9 @@
+---
+description: 
+globs: components/frontend/**
+alwaysApply: false
+---
+1. Мы пишем фронтенд согласно архитектуре Feature Sliced Design, используя клиент openapi.
+2. Для того чтобы на фронтенде появились новые методы бэкенда - необходимо создать клиент через pnpm generate-client в компоненте backend, после чего произвести сборку клиента через pnpm run build в репозитории client.
+3. Всегда пиши комментарии к коду.
+4. Всегда экспортируй Vue компоненты через index.ts файл в виде export {default as SomeWidget} from './SomeWidget'.

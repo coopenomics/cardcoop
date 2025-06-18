@@ -80,8 +80,8 @@ module.exports = {
 
     // The core 'no-unused-vars' rules (in the eslint:recommended ruleset)
     // does not work with type definitions
-    'no-unused-vars': 'off',
-
+    'no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
 
     // allow debugger during development only

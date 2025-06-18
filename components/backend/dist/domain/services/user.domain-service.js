@@ -15,23 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDomainService = void 0;
 const common_1 = require("@nestjs/common");
 const user_repository_1 = require("../repositories/user.repository");
-const user_entity_1 = require("../entities/user.entity");
 const uuid_1 = require("uuid");
 const jwt = require("jsonwebtoken");
+const jwt_token_repository_1 = require("../repositories/jwt-token.repository");
+const uuid_token_repository_1 = require("../repositories/uuid-token.repository");
+const user_entity_1 = require("../entities/user.entity");
+const config_service_1 = require("../../infrastructure/config/config.service");
 let UserDomainService = class UserDomainService {
-    constructor(userRepository) {
+    constructor(config, userRepository, jwtTokenRepository, uuidTokenRepository) {
+        this.config = config;
         this.userRepository = userRepository;
+        this.jwtTokenRepository = jwtTokenRepository;
+        this.uuidTokenRepository = uuidTokenRepository;
     }
     async initiateRegistration(email) {
         const existingUser = await this.userRepository.findByEmail(email);
         if (existingUser) {
-            throw new Error('User already exists');
+            throw new common_1.BadRequestException('User already exists');
         }
         const salt = (0, uuid_1.v4)();
         const uuid = (0, uuid_1.v4)();
+        await this.uuidTokenRepository.saveUuid(uuid, new Date(Date.now() + this.config.uuidRegExpirationMs));
         return { uuid, salt };
     }
     async completeRegistration(email, hash_key, uuid, salt) {
+        const isValidUuid = await this.uuidTokenRepository.isUuidValid(uuid);
+        if (!isValidUuid)
+            throw new common_1.BadRequestException('Invalid or expired uuid');
         const user = new user_entity_1.User({
             id: (0, uuid_1.v4)(),
             email,
@@ -41,47 +51,80 @@ let UserDomainService = class UserDomainService {
         await this.userRepository.create(user);
         const access_token = this.generateAccessToken(user.id);
         const refresh_token = this.generateRefreshToken(user.id);
+        await this.jwtTokenRepository.saveJwt(access_token, this.datePlusDays(this.config.accessTokenExpirationDays));
+        await this.jwtTokenRepository.saveJwt(refresh_token, this.datePlusDays(this.config.refreshTokenExpirationDays));
         return { access_token, refresh_token };
     }
     async initiateLogin(email) {
         const user = await this.userRepository.findByEmail(email);
         if (!user) {
-            throw new Error('User not found');
+            throw new common_1.BadRequestException('User not found');
         }
-        return { uuid: (0, uuid_1.v4)(), salt: user.salt };
+        const uuid = (0, uuid_1.v4)();
+        await this.uuidTokenRepository.saveUuid(uuid, new Date(Date.now() + this.config.uuidLoginExpirationMs));
+        return { uuid, salt: user.salt };
     }
     async completeLogin(email, hash_key, uuid) {
+        const isValidUuid = await this.uuidTokenRepository.isUuidValid(uuid);
+        if (!isValidUuid)
+            throw new Error('Invalid or expired uuid');
         const user = await this.userRepository.findByEmail(email);
         if (!user || user.hash_key !== hash_key) {
             throw new Error('Invalid credentials');
         }
         const access_token = this.generateAccessToken(user.id);
         const refresh_token = this.generateRefreshToken(user.id);
+        await this.jwtTokenRepository.saveJwt(access_token, this.datePlusDays(this.config.accessTokenExpirationDays));
+        await this.jwtTokenRepository.saveJwt(refresh_token, this.datePlusDays(this.config.refreshTokenExpirationDays));
         return { access_token, refresh_token };
     }
-    generateAccessToken(userId) {
-        return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
-    }
-    generateRefreshToken(userId) {
-        return jwt.sign({ sub: userId }, process.env.JWT_SECRET, { expiresIn: '180d' });
+    async logout(data) {
+        await this.jwtTokenRepository.revokeJwt(data.access_token);
+        await this.jwtTokenRepository.revokeJwt(data.refresh_token);
     }
     async refreshAccessToken(refreshToken) {
+        const isValid = await this.jwtTokenRepository.isJwtValid(refreshToken);
+        if (!isValid)
+            throw new common_1.BadRequestException('Invalid or revoked refresh token');
         try {
-            const payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
-            const userId = payload.sub;
-            const access_token = this.generateAccessToken(userId);
-            const newRefreshToken = this.generateRefreshToken(userId);
+            const payload = jwt.verify(refreshToken, this.config.jwtSecret);
+            const user_id = payload.sub;
+            const access_token = this.generateAccessToken(user_id);
+            const newRefreshToken = this.generateRefreshToken(user_id);
+            await this.jwtTokenRepository.saveJwt(access_token, this.datePlusDays(this.config.accessTokenExpirationDays));
+            await this.jwtTokenRepository.saveJwt(newRefreshToken, this.datePlusDays(this.config.refreshTokenExpirationDays));
             return { access_token, refresh_token: newRefreshToken };
         }
         catch (error) {
-            throw new Error('Invalid refresh token');
+            throw new common_1.BadRequestException('Invalid refresh token');
         }
+    }
+    async revokeJwt(jwtToken) {
+        await this.jwtTokenRepository.revokeJwt(jwtToken);
+    }
+    async revokeUuid(uuid) {
+        await this.uuidTokenRepository.revokeUuid(uuid);
+    }
+    generateAccessToken(user_id) {
+        return jwt.sign({ sub: user_id }, this.config.jwtSecret, {
+            expiresIn: `${this.config.accessTokenExpirationDays}d`,
+        });
+    }
+    generateRefreshToken(user_id) {
+        return jwt.sign({ sub: user_id }, this.config.jwtSecret, {
+            expiresIn: `${this.config.refreshTokenExpirationDays}d`,
+        });
+    }
+    datePlusDays(days) {
+        return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
     }
 };
 exports.UserDomainService = UserDomainService;
 exports.UserDomainService = UserDomainService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)(user_repository_1.USER_REPOSITORY)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, common_1.Inject)(user_repository_1.USER_REPOSITORY)),
+    __param(2, (0, common_1.Inject)(jwt_token_repository_1.JWT_TOKEN_REPOSITORY)),
+    __param(3, (0, common_1.Inject)(uuid_token_repository_1.UUID_TOKEN_REPOSITORY)),
+    __metadata("design:paramtypes", [config_service_1.ConfigService, Object, Object, Object])
 ], UserDomainService);
 //# sourceMappingURL=user.domain-service.js.map

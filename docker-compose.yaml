@@ -1,27 +1,27 @@
 version: '3.8'
 
 services:
-  redis:
-    image: redis:6.2
-    command: redis-server --requirepass your_redis_password
-    restart: unless-stopped
-    ports:
-      - '6389:6379'
-    volumes:
-      - redis_data:/data
+  # redis:
+  #   image: redis:6.2
+  #   command: redis-server --requirepass your_redis_password
+  #   restart: unless-stopped
+  #   ports:
+  #     - '6389:6379'
+  #   volumes:
+  #     - redis_data:/data
 
-  vault:
-    image: vault:1.9.0
-    cap_add:
-      - IPC_LOCK
-    environment:
-      VAULT_DEV_ROOT_TOKEN_ID: your_vault_root_token
-      VAULT_DEV_LISTEN_ADDRESS: '0.0.0.0:8200'
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    env_file:
+      - ./components/backend/.env
     ports:
-      - '8200:8200'
-    command: 'server -dev -dev-root-token-id=your_vault_root_token -dev-listen-address=0.0.0.0:8200'
+      - "5482:5432"
     volumes:
-      - vault_data:/vault/file
+      - postgres_data:/var/lib/postgresql/data  # Сохраняем данные в volume
+
+
 
   # backend:
   #   build: ./components/backend
@@ -35,5 +35,5 @@ services:
   #     - vault
 
 volumes:
-  redis_data:
-  vault_data:
+  # redis_data:
+  postgres_data:

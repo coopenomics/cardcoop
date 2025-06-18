@@ -1,4 +1,4 @@
-import { Coop } from '../entities/coop.entity';
+import type { Coop } from "../entities/coop.entity";
 
 export interface CoopRepository {
   findByName(name: string): Promise<Coop | null>;

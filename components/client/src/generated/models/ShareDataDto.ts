@@ -2,14 +2,27 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { AccessMetaInputDTO } from './AccessMetaInputDTO';
 export type ShareDataDTO = {
     /**
-     * Название кооператива
+     * Имя аккаунта пользователя
+     */
+    username: string;
+    /**
+     * Имя аккаунта кооператива
      */
     coopname: string;
     /**
      * Зашифрованные данные для передачи
      */
-    data: string;
+    encrypted_data: string;
+    /**
+     * Публичный ключ кооператива необходимый для дешифровки
+     */
+    public_key: string;
+    /**
+     * Не обязательные данные для идентификации устройства пользователя
+     */
+    meta?: AccessMetaInputDTO;
 };
 

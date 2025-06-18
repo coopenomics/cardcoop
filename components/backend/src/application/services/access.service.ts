@@ -20,8 +20,8 @@ export class AccessService {
     return new CoopInfoResponseDTO(result)
   }
 
-  async shareData(userId: string, dto: ShareDataDTO): Promise<ShareDataResponseDTO> {
-    const ticket = await this.accessInteractor.shareData(userId, dto);
+  async shareData(user_id: string, dto: ShareDataDTO): Promise<ShareDataResponseDTO> {
+    const ticket = await this.accessInteractor.shareData(user_id, dto);
     return new ShareDataResponseDTO(ticket);
   }
 

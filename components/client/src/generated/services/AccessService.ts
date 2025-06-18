@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ExchangeTicketInputDTO } from '../models/ExchangeTicketInputDTO';
 import type { CoopInfoResponseDTO } from '../models/CoopInfoResponseDTO';
+import type { EncryptedDataResponseDTO } from '../models/EncryptedDataResponseDTO';
+import type { ExchangeTicketInputDTO } from '../models/ExchangeTicketInputDTO';
 import type { ExchangeTicketResponseDTO } from '../models/ExchangeTicketResponseDTO';
 import type { PrepareShareDataInputDTO } from '../models/PrepareShareDataInputDTO';
 import type { ShareDataDTO } from '../models/ShareDataDTO';
@@ -68,15 +69,13 @@ export class AccessService {
      * Получение зашифрованных данных
      * @param username
      * @param coopname
-     * @returns any Успешное получение зашифрованных данных
+     * @returns EncryptedDataResponseDTO Успешное получение зашифрованных данных
      * @throws ApiError
      */
     public static getEncryptedData(
         username: string,
         coopname: string,
-    ): CancelablePromise<{
-        data?: string;
-    }> {
+    ): CancelablePromise<EncryptedDataResponseDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/access/get-encrypted-data/{username}/{coopname}',

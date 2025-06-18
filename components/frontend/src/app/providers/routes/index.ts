@@ -1,7 +1,6 @@
 import layout from 'src/pages/_layouts/default.vue';
 import index from 'src/pages/index.vue';
 import blank from 'src/pages/blank/blank.vue';
-import permissionDenied from 'src/pages/_layouts/permissionDenied.vue';
 import { SignUpPage } from 'src/pages/Registrator/SignUp';
 import { SignInPage } from 'src/pages/Registrator/SignIn';
 import { RouteRecordRaw } from 'vue-router';
@@ -9,7 +8,6 @@ import { LostKeyPage } from 'src/pages/Registrator/LostKey/ui';
 import { ResetKeyPage } from 'src/pages/Registrator/ResetKey';
 import { CoopCardPage } from 'src/pages/User/CardPage';
 import { markRaw } from 'vue';
-
 
 const baseRoutes = [
   {
@@ -23,35 +21,25 @@ const baseRoutes = [
         component: index,
       },
       {
-        path: '/something-bad',
-        name: 'somethingBad',
-        component: blank,
-      },
-      {
-        path: '/permission-denied',
-        name: 'permissionDenied',
-        component: permissionDenied,
-      },
-      {
-        path: ':coopname/auth/signin',
+        path: 'signin',
         name: 'signin',
         component: SignInPage,
         children: [],
       },
       {
-        path: ':coopname/auth/lost-key',
+        path: 'lost-key',
         name: 'lostkey',
         component: LostKeyPage,
         children: [],
       },
       {
-        path: ':coopname/auth/reset-key',
+        path: 'reset-key',
         name: 'resetkey',
         component: ResetKeyPage,
         children: [],
       },
       {
-        path: ':coopname/auth/signup',
+        path: 'signup',
         name: 'signup',
         component: SignUpPage,
         children: [],

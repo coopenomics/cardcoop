@@ -3,10 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { CompleteLoginInputDTO } from '../models/CompleteLoginInputDTO';
+import type { CompleteLoginResponseDTO } from '../models/CompleteLoginResponseDTO';
 import type { CompleteRegistrationInputDTO } from '../models/CompleteRegistrationInputDTO';
 import type { InitiateLoginInputDTO } from '../models/InitiateLoginInputDTO';
 import type { InitiateRegistrationInputDTO } from '../models/InitiateRegistrationInputDTO';
-import type { CompleteLoginResponseDTO } from '../models/CompleteLoginResponseDTO';
+import type { LogoutInputDTO } from '../models/LogoutInputDTO';
+import type { RefreshTokenInputDTO } from '../models/RefreshTokenInputDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -82,37 +84,35 @@ export class AuthService {
     /**
      * refreshAccessToken
      * Обновление токена
-     * @param authorization
+     * @param requestBody
      * @returns CompleteLoginResponseDTO Успешное обновление токена
      * @throws ApiError
      */
     public static refreshAccessToken(
-        authorization: string,
+        requestBody: RefreshTokenInputDTO,
     ): CancelablePromise<CompleteLoginResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/refresh-token',
-            headers: {
-                'Authorization': authorization,
-            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
     /**
      * logout
      * Выход
-     * @param authorization
+     * @param requestBody
      * @returns any Успешный выход
      * @throws ApiError
      */
     public static logout(
-        authorization: string,
+        requestBody: LogoutInputDTO,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/logout',
-            headers: {
-                'Authorization': authorization,
-            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 }

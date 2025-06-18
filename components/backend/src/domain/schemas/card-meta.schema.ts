@@ -1,8 +1,13 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-// Определяем схему для поля `meta`
+/**
+ * Схема метаданных карты пайщика
+ * Содержит информацию о версии, датах выпуска и валидности карты
+ */
 export const CardMetaSchema = z.object({
-  version: z.number(), // Обязательное поле version
-  issued_at: z.date(),
-  // Другие поля можно добавить здесь, если нужно
-})
+  version: z.number(), // Версия формата карты
+  issued_at: z.date(), // Дата выпуска
+  valid_until: z.date().optional(), // Дата действия (опционально)
+  card_type: z.string(), // Тип карты (standard, premium и т.д.)
+  is_active: z.boolean().default(true), // Активна ли карта
+});

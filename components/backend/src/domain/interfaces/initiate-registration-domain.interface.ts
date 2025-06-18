@@ -1,1 +1,4 @@
-export interface InitiateRegistrationDomainReposponseInterface { uuid: string; salt: string }
+export interface InitiateRegistrationDomainReposponseInterface {
+  uuid: string;
+  salt: string;
+}

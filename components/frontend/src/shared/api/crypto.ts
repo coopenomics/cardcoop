@@ -1,11 +1,11 @@
 // Функция для расшифровки данных
-export const decrypt = async (data: string, password: string) => {
-  const encryptedBytes = new Uint8Array(data.length / 2);
-  for (let i = 0; i < data.length; i += 2) {
-    encryptedBytes[i / 2] = parseInt(data.substr(i, 2), 16);
+export const decrypt = async (encryptedData: string, password: string) => {
+  const encryptedBytes = new Uint8Array(encryptedData.length / 2);
+  for (let i = 0; i < encryptedData.length; i += 2) {
+    encryptedBytes[i / 2] = parseInt(encryptedData.substr(i, 2), 16);
   }
   const iv = encryptedBytes.slice(0, 16);
-  const data = encryptedBytes.slice(16);
+  const cipherText = encryptedBytes.slice(16);
   const passwordBuffer = new TextEncoder().encode(password);
   const keyMaterial = await window.crypto.subtle.importKey(
     'raw',
@@ -17,7 +17,7 @@ export const decrypt = async (data: string, password: string) => {
   const key = await window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: new TextEncoder().encode('some-random-salt'), //это временное решение, в будущем посолим
+      salt: new TextEncoder().encode('some-random-salt'), // это временное решение, в будущем посолим
       iterations: 1000,
       hash: 'SHA-256',
     },
@@ -29,17 +29,17 @@ export const decrypt = async (data: string, password: string) => {
   const decryptedData = await window.crypto.subtle.decrypt(
     { name: 'AES-CBC', iv },
     key,
-    data
+    cipherText
   );
   return new TextDecoder().decode(decryptedData);
 };
 
 // Функция для шифрования данных
-export const encrypt = async (data: string, password: string) => {
+export const encrypt = async (plainText: string, password: string) => {
   const iv = window.crypto.getRandomValues(new Uint8Array(16));
   const encoder = new TextEncoder();
   const passwordBuffer = encoder.encode(password);
-  const dataBuffer = encoder.encode(data);
+  const plainTextBuffer = encoder.encode(plainText);
   const keyMaterial = await window.crypto.subtle.importKey(
     'raw',
     passwordBuffer,
@@ -50,7 +50,7 @@ export const encrypt = async (data: string, password: string) => {
   const key = await window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: new TextEncoder().encode('some-random-salt'), //это временное решение, в будущем посолим
+      salt: encoder.encode('some-random-salt'), // это временное решение, в будущем посолим
       iterations: 1000,
       hash: 'SHA-256',
     },
@@ -59,19 +59,20 @@ export const encrypt = async (data: string, password: string) => {
     true,
     ['encrypt', 'decrypt']
   );
-  const data = await window.crypto.subtle.encrypt(
+  const encryptedBuffer = await window.crypto.subtle.encrypt(
     { name: 'AES-CBC', iv },
     key,
-    dataBuffer
+    plainTextBuffer
   );
-  const combined = new Uint8Array(iv.length + data.byteLength);
+  const combined = new Uint8Array(iv.length + encryptedBuffer.byteLength);
   combined.set(iv);
-  combined.set(new Uint8Array(data), iv.length);
+  combined.set(new Uint8Array(encryptedBuffer), iv.length);
   return Array.from(combined)
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 };
 
+// Хэширование строки в SHA-256
 export const hashSHA256 = async (
   message: string | Uint8Array
 ): Promise<string> => {

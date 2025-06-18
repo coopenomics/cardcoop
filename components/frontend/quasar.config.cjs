@@ -10,20 +10,15 @@
 require('dotenv').config();
 const { configure } = require('quasar/wrappers');
 const path = require('path');
-const glob = require('glob')
 
 module.exports = configure(function (/* ctx */) {
-  // Ищем все boot файлы в директории extensions
-  const extensionBootFiles = glob
-    .sync('extensions/**/boot.{ts,js}') // Ищем файлы с расширениями .ts и .js
-    .map(file => '../../' + file.replace(/\.(ts|js)$/, '')) // Добавляем ../../ и убираем расширение
 
   return {
     htmlVariables: {
-      SITE_TITLE: process.env.SITE_TITLE || 'Цифровой Кооператив',
+      SITE_TITLE: process.env.SITE_TITLE || 'CARD.COOP',
       SITE_DESCRIPTION:
         process.env.SITE_DESCRIPTION ||
-        'кооперативная экономика для сообществ и бизнеса',
+        'сервис аудентификации пайщиков платформы "Кооперативной Экономики"',
       SITE_IMAGE:
         process.env.SITE_IMAGE || 'https://ia.media-imdb.com/images/rock.jpg',
     },
@@ -35,9 +30,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
       'init-stores',
-      'navigation-guards',
-      'i18n', 'axios', 'sentry',
-      ...extensionBootFiles
+      'i18n', 'axios', 'sentry'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -108,7 +101,7 @@ module.exports = configure(function (/* ctx */) {
           'vite-plugin-checker',
           {
             vueTsc: {
-              tsconfigPath: 'tsconfig.vue-tsc.json',
+              tsconfigPath: 'tsconfig.json',
             },
             eslint: {
               lintCommand: 'eslint "./**/*.{js,ts,mjs,cjs,vue}"',
