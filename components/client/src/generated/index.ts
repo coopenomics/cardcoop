@@ -17,12 +17,14 @@ export type { EncryptedDataResponseDTO } from './models/EncryptedDataResponseDTO
 export type { ExchangeTicketInputDTO } from './models/ExchangeTicketInputDTO';
 export type { ExchangeTicketResponseDTO } from './models/ExchangeTicketResponseDTO';
 export type { Function } from './models/Function';
+export type { GetUserCardsResponseDTO } from './models/GetUserCardsResponseDTO';
 export type { InitiateLoginInputDTO } from './models/InitiateLoginInputDTO';
 export type { InitiateRegistrationInputDTO } from './models/InitiateRegistrationInputDTO';
 export type { IssueCardInputDTO } from './models/IssueCardInputDTO';
 export type { IssueCardResponseDTO } from './models/IssueCardResponseDTO';
 export type { LogoutInputDTO } from './models/LogoutInputDTO';
 export type { PrepareShareDataInputDTO } from './models/PrepareShareDataInputDTO';
+export type { PrivateDataResponseDTO } from './models/PrivateDataResponseDTO';
 export type { RefreshTokenInputDTO } from './models/RefreshTokenInputDTO';
 export type { SchemaItem } from './models/SchemaItem';
 export type { SchemaResponseDTO } from './models/SchemaResponseDTO';

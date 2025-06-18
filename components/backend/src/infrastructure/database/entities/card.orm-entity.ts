@@ -27,7 +27,7 @@ export class CardORM {
   username!: string;
 
   @Column()
-  coop_name!: string;
+  coopname!: string;
 
   @Column()
   encrypted_key!: string;

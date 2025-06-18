@@ -118,7 +118,7 @@ module.exports = configure(function (/* ctx */) {
       // https: true
       vueDevtools: false,
       open: false, // opens browser window automatically
-      port: 3005,
+      port: 3025,
       hmr:{
         overlay: false
       }

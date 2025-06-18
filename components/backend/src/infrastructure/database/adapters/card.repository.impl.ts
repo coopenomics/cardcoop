@@ -40,18 +40,18 @@ export class CardRepositoryImpl implements CardRepository {
   /**
    * Ищет карту по имени пользователя и названию кооператива
    * @param username Имя пользователя
-   * @param coop_name Название кооператива
+   * @param coopname Название кооператива
    * @returns Карта или null
    */
   async findByUsername(
     username: string,
-    coop_name: string,
+    coopname: string,
   ): Promise<Card | null> {
-    if (!username || !coop_name) {
-      throw new BadRequestException('Username and coop_name must be provided');
+    if (!username || !coopname) {
+      throw new BadRequestException('Username and coopname must be provided');
     }
     const result = await this.repository.findOne({
-      where: { username, coop_name },
+      where: { username, coopname },
     });
     return result ? new Card(result) : null;
   }
@@ -72,18 +72,18 @@ export class CardRepositoryImpl implements CardRepository {
   /**
    * Ищет карту пользователя для конкретного кооператива
    * @param user_id ID пользователя
-   * @param coop_name Название кооператива
+   * @param coopname Название кооператива
    * @returns Карта или null
    */
   async findByUserIdAndCoopName(
     user_id: string,
-    coop_name: string,
+    coopname: string,
   ): Promise<Card | null> {
-    if (!user_id || !coop_name) {
-      throw new BadRequestException('User ID and coop_name must be provided');
+    if (!user_id || !coopname) {
+      throw new BadRequestException('User ID and coopname must be provided');
     }
     const card = await this.repository.findOne({
-      where: { user_id, coop_name },
+      where: { user_id, coopname },
     });
     return card ? new Card(card) : null;
   }

@@ -25,7 +25,7 @@ export class GetUserCardsResponseDTO {
     example: 'coop_example',
   })
   @IsString()
-  coop_name!: string;
+  coopname!: string;
 
   @ApiProperty({
     description: 'Дата выпуска карты',

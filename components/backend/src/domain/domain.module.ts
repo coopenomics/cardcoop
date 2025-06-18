@@ -1,3 +1,16 @@
+/**
+ * Модуль домена (Domain Layer) - сердце бизнес-логики приложения.
+ *
+ * Ответственность:
+ * - Содержит бизнес-логику и правила
+ * - Независим от внешних слоев (инфраструктуры и приложения)
+ * - Определяет интерфейсы для взаимодействия с внешними сервисами
+ *
+ * Компоненты:
+ * - Domain Services: Реализуют бизнес-логику для конкретных доменных объектов
+ * - Interactors: Оркестрируют использование доменных сервисов для выполнения
+ *   конкретных сценариев использования (use cases)
+ */
 import { Module } from '@nestjs/common';
 import { UserDomainService } from './services/user.domain-service';
 import { CardDomainService } from './services/card.domain-service';
@@ -11,11 +24,13 @@ import { PrivateDataDomainService } from './services/private-data.domain-service
 @Module({
   imports: [InfrastructureModule],
   providers: [
+    // Доменные сервисы
     UserDomainService,
     CardDomainService,
     AccessDomainService,
     PrivateDataDomainService,
 
+    // Интеракторы (реализация сценариев использования)
     AccessInteractor,
     CardInteractor,
     UserInteractor,

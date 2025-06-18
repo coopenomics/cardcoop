@@ -8,10 +8,11 @@ import { JwtTokenORM } from '../entities/jwt-token.entity';
 export class TypeormJwtTokenRepository implements JwtTokenRepository {
   constructor(
     @InjectRepository(JwtTokenORM)
-    private readonly repo: Repository<JwtTokenORM>
+    private readonly repo: Repository<JwtTokenORM>,
   ) {}
 
   async saveJwt(jwt: string, expires_at: Date): Promise<void> {
+    // Сохраняем новый токен без проверки существования
     const token = this.repo.create({ jwt, expires_at });
     await this.repo.save(token);
   }

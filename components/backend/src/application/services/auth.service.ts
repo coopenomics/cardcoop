@@ -1,3 +1,10 @@
+/**
+ * Сервис аутентификации и управления пользователями.
+ *
+ * Отвечает за координацию взаимодействия между контроллером аутентификации
+ * и доменными сервисами/интеракторами. Преобразует DTO в доменные модели
+ * и обратно, изолируя слой приложения от деталей домена.
+ */
 import { Injectable } from '@nestjs/common';
 import { UserDomainService } from '../../domain/services/user.domain-service';
 import { CompleteLoginResponseDTO } from '../dto/complete-login-response.dto';
@@ -16,6 +23,12 @@ import type { VerifyEmailResponseDTO } from '../dto/verify-email-response.dto';
 export class AuthService {
   constructor(private readonly userInteractor: UserInteractor) {}
 
+  /**
+   * Инициирует процесс регистрации пользователя.
+   *
+   * @param data - DTO с данными для инициализации регистрации (email)
+   * @returns Данные для продолжения регистрации
+   */
   async initiateRegistration(
     data: InitiateRegistrationInputDTO,
   ): Promise<InitiateRegistrationResponseDTO> {
@@ -23,6 +36,12 @@ export class AuthService {
     return new InitiateRegistrationResponseDTO({ ...response });
   }
 
+  /**
+   * Завершает процесс регистрации пользователя.
+   *
+   * @param data - DTO с данными для завершения регистрации
+   * @returns Токены доступа для авторизации
+   */
   async completeRegistration(
     data: CompleteRegistrationInputDTO,
   ): Promise<CompleteLoginResponseDTO> {
@@ -39,12 +58,24 @@ export class AuthService {
     );
   }
 
+  /**
+   * Инициирует процесс входа пользователя.
+   *
+   * @param dto - DTO с данными для инициализации входа (email)
+   * @returns Данные для продолжения входа
+   */
   async initiateLogin(
     dto: InitiateLoginInputDTO,
   ): Promise<InitiateLoginResponseDTO> {
     return this.userInteractor.initiateLogin(dto.email);
   }
 
+  /**
+   * Завершает процесс входа пользователя.
+   *
+   * @param dto - DTO с данными для завершения входа
+   * @returns Токены доступа для авторизации
+   */
   async completeLogin(
     dto: CompleteLoginInputDTO,
   ): Promise<CompleteLoginResponseDTO> {
@@ -60,6 +91,12 @@ export class AuthService {
     );
   }
 
+  /**
+   * Обновляет токен доступа по refresh токену.
+   *
+   * @param refresh_token - Токен обновления
+   * @returns Новые токены доступа
+   */
   async refreshAccessToken(
     refresh_token: string,
   ): Promise<CompleteLoginResponseDTO> {
@@ -71,10 +108,21 @@ export class AuthService {
     );
   }
 
+  /**
+   * Выполняет выход пользователя из системы.
+   *
+   * @param data - DTO с данными для выхода
+   */
   async logout(data: LogoutInputDTO): Promise<void> {
     await this.userInteractor.logout(data);
   }
 
+  /**
+   * Верифицирует email пользователя по коду подтверждения.
+   *
+   * @param dto - DTO с данными для верификации email
+   * @returns Результат верификации
+   */
   async verifyEmail(dto: VerifyEmailInputDTO): Promise<VerifyEmailResponseDTO> {
     // В реальной системе проверяем код через email сервис
     // В тестах для упрощения всегда возвращаем успех

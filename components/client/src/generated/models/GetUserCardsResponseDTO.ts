@@ -2,13 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type IssueCardResponseDTO = {
+export type GetUserCardsResponseDTO = {
     /**
      * Уникальный идентификатор карты
      */
     id: string;
     /**
-     * Имя пользователя, связанного с картой
+     * Имя пользователя в кооперативе
      */
     username: string;
     /**

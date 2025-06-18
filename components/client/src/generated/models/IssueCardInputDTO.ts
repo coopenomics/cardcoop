@@ -9,6 +9,10 @@ export type IssueCardInputDTO = {
      */
     username: string;
     /**
+     * Название кооператива
+     */
+    coopname: string;
+    /**
      * Зашифрованный приватный ключ
      */
     encrypted_key: string;

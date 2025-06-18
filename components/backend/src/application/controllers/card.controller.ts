@@ -7,6 +7,8 @@ import {
   Get,
   Param,
   Delete,
+  ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CardService } from '../services/card.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -73,6 +75,30 @@ export class CardController {
   getUserCards(@Request() req): Promise<GetUserCardsResponseDTO[]> {
     const user_id = req.user.user_id;
     return this.cardService.getUserCards(user_id);
+  }
+
+  /**
+   * Получает карту по ID
+   */
+  @UseGuards(JwtAuthGuard)
+  @Get(':card_id')
+  @Swagger('Получение карты по ID')
+  @ApiParam({
+    name: 'card_id',
+    description: 'ID карты',
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Данные карты',
+    type: GetUserCardsResponseDTO,
+  })
+  async getCardById(
+    @Param('card_id') card_id: string,
+    @Request() req,
+  ): Promise<GetUserCardsResponseDTO> {
+    const user_id = req.user.user_id;
+    return await this.cardService.getCardById(card_id, user_id);
   }
 
   /**

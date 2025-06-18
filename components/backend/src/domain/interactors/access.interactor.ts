@@ -1,3 +1,12 @@
+/**
+ * Интерактор доступа - реализует сценарии использования (use cases) для управления доступом к данным.
+ *
+ * Отвечает за:
+ * - Подготовку и передачу зашифрованных данных между пользователями и кооперативами
+ * - Обмен одноразовых билетов на JWT-токены доступа
+ * - Управление запросами доступа к карточкам пользователей
+ * - Отзыв ранее предоставленного доступа
+ */
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   ACCESS_REQUEST_REPOSITORY,
@@ -42,6 +51,16 @@ export class AccessInteractor {
     private readonly accessRepository: AccessRequestRepository,
   ) {}
 
+  /**
+   * Подготавливает данные для передачи кооперативу.
+   *
+   * Получает публичный ключ и анонс кооператива из блокчейна,
+   * которые необходимы для шифрования данных перед их передачей.
+   *
+   * @param coopname - Имя кооператива
+   * @returns Объект с данными для шифрования (имя, публичный ключ, анонс)
+   * @throws BadRequestException - если публичная информация о кооперативе не найдена
+   */
   async prepareShareData(
     coopname: string,
   ): Promise<PrepareShareDataDomainResultInterface> {
@@ -67,6 +86,17 @@ export class AccessInteractor {
     };
   }
 
+  /**
+   * Передает зашифрованные данные пользователя кооперативу.
+   *
+   * Создает запись запроса доступа с зашифрованными данными и
+   * возвращает одноразовый билет для последующего обмена на JWT.
+   *
+   * @param user_id - ID пользователя, предоставляющего доступ
+   * @param dto - DTO с зашифрованными данными и метаинформацией
+   * @returns Одноразовый билет (ticket) для обмена на JWT токен
+   * @throws BadRequestException - если карта не найдена или не принадлежит пользователю
+   */
   async shareData(user_id: string, dto: ShareDataDTO): Promise<string> {
     const card = await this.cardRepository.findByUsername(
       dto.username,
@@ -100,12 +130,28 @@ export class AccessInteractor {
     return ticket;
   }
 
-  async exchangeTicketForJwt(dto: ExchangeTicketInputDTO): Promise<string> {
+  /**
+   * Обменивает одноразовый билет на JWT токен.
+   *
+   * Проверяет действительность билета и создает JWT токен для кооператива,
+   * предоставляющий ограниченный доступ к данным конкретного пользователя.
+   *
+   * @param dto - DTO с билетом для обмена
+   * @returns Объект, содержащий JWT токен доступа
+   * @throws BadRequestException - если билет недействителен или уже использован
+   */
+  async exchangeTicketForJwt(
+    dto: ExchangeTicketInputDTO,
+  ): Promise<{ access_token: string }> {
     const accessRequest =
       await this.accessDomainService.getAccessRequestByTicket(dto.ticket);
 
-    if (!accessRequest || accessRequest.ticket_is_used) {
+    if (!accessRequest) {
       throw new BadRequestException('Invalid ticket');
+    }
+
+    if (accessRequest.ticket_is_used) {
+      throw new BadRequestException('Ticket already used');
     }
 
     // Генерируем JWT для кооператива с ограниченным доступом
@@ -119,9 +165,19 @@ export class AccessInteractor {
 
     await this.accessRepository.save(accessRequest);
 
-    return coopAccessToken;
+    return { access_token: coopAccessToken };
   }
 
+  /**
+   * Получает зашифрованные данные пользователя для кооператива.
+   *
+   * Используется кооперативом после аутентификации с JWT токеном
+   * для получения фактических зашифрованных данных пользователя.
+   *
+   * @param username - Имя пользователя карты
+   * @param coopname - Имя кооператива
+   * @returns Объект с зашифрованными данными и метаинформацией
+   */
   async getEncryptedData(
     username: string,
     coopname: string,
@@ -139,5 +195,60 @@ export class AccessInteractor {
       meta: accessRequest.meta,
       public_key: accessRequest.public_key,
     };
+  }
+
+  /**
+   * Отзыв доступа к данным карты у кооператива.
+   *
+   * Удаляет запись доступа, что предотвращает дальнейшую возможность
+   * кооператива получать данные пользователя.
+   *
+   * @param user_id - ID пользователя, отзывающего доступ
+   * @param username - Имя пользователя карты
+   * @param coopname - Имя кооператива
+   * @throws BadRequestException - если карта не найдена или не принадлежит пользователю
+   */
+  async revokeAccess(
+    user_id: string,
+    username: string,
+    coopname: string,
+  ): Promise<void> {
+    // Проверка существования карты пользователя
+    const card = await this.cardRepository.findByUsername(username, coopname);
+    if (!card) {
+      throw new BadRequestException('Карта не найдена');
+    }
+
+    // Проверка принадлежности карты пользователю
+    if (card.user_id !== user_id) {
+      throw new BadRequestException('Нет доступа к данной карте');
+    }
+
+    // Отзыв доступа
+    await this.accessDomainService.revokeAccess(username, coopname);
+  }
+
+  /**
+   * Получение карт пользователя.
+   *
+   * Возвращает все карты, принадлежащие указанному пользователю.
+   *
+   * @param user_id - ID пользователя
+   * @returns Массив карт пользователя
+   */
+  async getUserCards(user_id: string) {
+    return this.cardRepository.findByUserId(user_id);
+  }
+
+  /**
+   * Получение списка доступов по имени пользователя.
+   *
+   * Возвращает все активные запросы доступа к данным указанного пользователя.
+   *
+   * @param username - Имя пользователя
+   * @returns Список объектов AccessRequest
+   */
+  async listAccessesByUsername(username: string): Promise<AccessRequest[]> {
+    return this.accessDomainService.listAccesses(username);
   }
 }

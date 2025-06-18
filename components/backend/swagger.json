@@ -673,7 +673,7 @@
             "description": "Имя пользователя, которому будет выдана карта",
             "example": "user123"
           },
-          "coop_name": {
+          "coopname": {
             "type": "string",
             "description": "Название кооператива",
             "example": "coop_example"
@@ -703,7 +703,7 @@
         },
         "required": [
           "username",
-          "coop_name",
+          "coopname",
           "encrypted_key",
           "encrypted_data",
           "meta"
@@ -722,7 +722,7 @@
             "description": "Имя пользователя, связанного с картой",
             "example": "username123"
           },
-          "coop_name": {
+          "coopname": {
             "type": "string",
             "description": "Название кооператива",
             "example": "coop_example"
@@ -747,7 +747,7 @@
         "required": [
           "id",
           "username",
-          "coop_name",
+          "coopname",
           "issued_at",
           "card_type",
           "is_active"
@@ -810,7 +810,7 @@
             "description": "Имя пользователя в кооперативе",
             "example": "username123"
           },
-          "coop_name": {
+          "coopname": {
             "type": "string",
             "description": "Название кооператива",
             "example": "coop_example"
@@ -835,7 +835,7 @@
         "required": [
           "id",
           "username",
-          "coop_name",
+          "coopname",
           "issued_at",
           "card_type",
           "is_active"

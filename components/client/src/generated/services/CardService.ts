@@ -2,8 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { GetUserCardsResponseDTO } from '../models/GetUserCardsResponseDTO';
 import type { IssueCardInputDTO } from '../models/IssueCardInputDTO';
 import type { IssueCardResponseDTO } from '../models/IssueCardResponseDTO';
+import type { PrivateDataResponseDTO } from '../models/PrivateDataResponseDTO';
 import type { SchemaResponseDTO } from '../models/SchemaResponseDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -36,6 +38,54 @@ export class CardService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/card/schema',
+        });
+    }
+    /**
+     * getUserCards
+     * Получение всех карт пользователя
+     * @returns GetUserCardsResponseDTO Список карт пользователя
+     * @throws ApiError
+     */
+    public static getUserCards(): CancelablePromise<Array<GetUserCardsResponseDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/card/user',
+        });
+    }
+    /**
+     * getPrivateData
+     * Получение приватных данных по ID карты
+     * @param cardId ID карты
+     * @returns PrivateDataResponseDTO Приватные данные пользователя
+     * @throws ApiError
+     */
+    public static getPrivateData(
+        cardId: string,
+    ): CancelablePromise<PrivateDataResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/card/{card_id}/private-data',
+            path: {
+                'card_id': cardId,
+            },
+        });
+    }
+    /**
+     * deactivateCard
+     * Деактивация карты
+     * @param cardId ID карты для деактивации
+     * @returns IssueCardResponseDTO Карта успешно деактивирована
+     * @throws ApiError
+     */
+    public static deactivateCard(
+        cardId: string,
+    ): CancelablePromise<IssueCardResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/card/{card_id}',
+            path: {
+                'card_id': cardId,
+            },
         });
     }
 }

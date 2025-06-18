@@ -12,7 +12,7 @@ export class Card {
   user_id!: string; // ID пользователя-владельца карты
   private_data_id!: string; // ID связанных приватных данных
   username!: string; // Имя пользователя в кооперативе
-  coop_name!: string; // Название кооператива
+  coopname!: string; // Название кооператива
   encrypted_key!: string; // Зашифрованный ключ доступа к кооперативу
   meta!: CardMetaDomainInterface; // Метаданные карты
 

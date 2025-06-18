@@ -41,7 +41,7 @@ export class CardService {
     return {
       id: savedCard.id,
       username: savedCard.username,
-      coop_name: savedCard.coop_name,
+      coopname: savedCard.coopname,
       issued_at: savedCard.meta.issued_at,
       card_type: savedCard.meta.card_type,
       is_active: savedCard.meta.is_active,
@@ -60,11 +60,34 @@ export class CardService {
     return cards.map((card) => ({
       id: card.id,
       username: card.username,
-      coop_name: card.coop_name,
+      coopname: card.coopname,
       issued_at: card.meta.issued_at,
       card_type: card.meta.card_type,
       is_active: card.meta.is_active,
     }));
+  }
+
+  /**
+   * Получает карту по ID
+   *
+   * @param card_id ID карты
+   * @param user_id ID пользователя для проверки доступа
+   * @returns Данные карты
+   */
+  async getCardById(
+    card_id: string,
+    user_id: string,
+  ): Promise<GetUserCardsResponseDTO> {
+    const card = await this.cardInteractor.getCardById(card_id, user_id);
+
+    return {
+      id: card.id,
+      username: card.username,
+      coopname: card.coopname,
+      issued_at: card.meta.issued_at,
+      card_type: card.meta.card_type,
+      is_active: card.meta.is_active,
+    };
   }
 
   /**
@@ -107,7 +130,7 @@ export class CardService {
     return {
       id: card.id,
       username: card.username,
-      coop_name: card.coop_name,
+      coopname: card.coopname,
       issued_at: card.meta.issued_at,
       card_type: card.meta.card_type,
       is_active: card.meta.is_active,

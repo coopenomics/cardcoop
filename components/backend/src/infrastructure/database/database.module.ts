@@ -1,3 +1,12 @@
+/**
+ * Модуль базы данных - реализует доступ к хранилищу данных через TypeORM.
+ *
+ * Отвечает за:
+ * - Настройку подключения к базе данных
+ * - Регистрацию ORM-сущностей
+ * - Предоставление конкретных реализаций репозиториев для доменного слоя
+ * - Инъекцию зависимостей через токены репозиториев
+ */
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserORM } from './entities/user.entity';
@@ -60,6 +69,7 @@ import { PRIVATE_DATA_REPOSITORY } from 'src/domain/repositories/private-data.re
     ]),
   ],
   providers: [
+    // Связывание доменных интерфейсов с конкретными реализациями
     {
       provide: USER_REPOSITORY,
       useClass: UserRepositoryImpl,

@@ -26,7 +26,7 @@ export class IssueCardInputDTO {
   })
   @IsString()
   @IsNotEmpty()
-  coop_name!: string;
+  coopname!: string;
 
   @ApiProperty({
     description: 'Зашифрованный приватный ключ',
