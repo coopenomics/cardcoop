@@ -169,4 +169,18 @@ export class CardDomainService {
 
     return this.cardRepository.save(updatedCard);
   }
+
+  /**
+   * Находит карту по имени пользователя и кооперативу.
+   *
+   * @param username - Имя пользователя в кооперативе
+   * @param coopname - Название кооператива
+   * @returns Карта или null, если не найдена
+   */
+  async findCardByUserAndCoop(
+    username: string,
+    coopname: string,
+  ): Promise<Card | null> {
+    return this.cardRepository.findByUsername(username, coopname);
+  }
 }

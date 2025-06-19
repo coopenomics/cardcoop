@@ -8,6 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AccessMetaInputDTO } from './models/AccessMetaInputDTO';
+export type { AccessResponseDTO } from './models/AccessResponseDTO';
 export type { CardMetaDTO } from './models/CardMetaDTO';
 export type { CompleteLoginInputDTO } from './models/CompleteLoginInputDTO';
 export type { CompleteLoginResponseDTO } from './models/CompleteLoginResponseDTO';
@@ -26,11 +27,15 @@ export type { LogoutInputDTO } from './models/LogoutInputDTO';
 export type { PrepareShareDataInputDTO } from './models/PrepareShareDataInputDTO';
 export type { PrivateDataResponseDTO } from './models/PrivateDataResponseDTO';
 export type { RefreshTokenInputDTO } from './models/RefreshTokenInputDTO';
+export type { RevokeAccessInputDTO } from './models/RevokeAccessInputDTO';
 export type { SchemaItem } from './models/SchemaItem';
 export type { SchemaResponseDTO } from './models/SchemaResponseDTO';
 export type { ShareDataDTO } from './models/ShareDataDTO';
 export type { ShareDataResponseDTO } from './models/ShareDataResponseDTO';
+export type { VerifyEmailInputDTO } from './models/VerifyEmailInputDTO';
+export type { VerifyEmailResponseDTO } from './models/VerifyEmailResponseDTO';
 
 export { AccessService } from './services/AccessService';
 export { AuthService } from './services/AuthService';
 export { CardService } from './services/CardService';
+export { HealthService } from './services/HealthService';

@@ -2,11 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { AccessResponseDTO } from '../models/AccessResponseDTO';
 import type { CoopInfoResponseDTO } from '../models/CoopInfoResponseDTO';
 import type { EncryptedDataResponseDTO } from '../models/EncryptedDataResponseDTO';
 import type { ExchangeTicketInputDTO } from '../models/ExchangeTicketInputDTO';
 import type { ExchangeTicketResponseDTO } from '../models/ExchangeTicketResponseDTO';
 import type { PrepareShareDataInputDTO } from '../models/PrepareShareDataInputDTO';
+import type { RevokeAccessInputDTO } from '../models/RevokeAccessInputDTO';
 import type { ShareDataDTO } from '../models/ShareDataDTO';
 import type { ShareDataResponseDTO } from '../models/ShareDataResponseDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -83,6 +85,35 @@ export class AccessService {
                 'username': username,
                 'coopname': coopname,
             },
+        });
+    }
+    /**
+     * revokeAccess
+     * Отзыв доступа у кооператива
+     * @param requestBody
+     * @returns any Доступ успешно отозван
+     * @throws ApiError
+     */
+    public static revokeAccess(
+        requestBody: RevokeAccessInputDTO,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/access/revoke',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * listAccesses
+     * Получение списка доступов пользователя
+     * @returns AccessResponseDTO Список предоставленных доступов пользователя
+     * @throws ApiError
+     */
+    public static listAccesses(): CancelablePromise<Array<AccessResponseDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/access/list',
         });
     }
 }

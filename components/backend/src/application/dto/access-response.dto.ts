@@ -1,46 +1,55 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsBoolean, IsDate } from 'class-validator';
+import { Type } from 'class-transformer';
 import { AccessRequest } from 'src/domain/entities/access-request.entity';
-import { AccessMetaDomainInterface } from 'src/domain/interfaces/access-meta.interface';
 
 /**
- * DTO для ответа со списком доступов
+ * DTO для представления информации о предоставленном доступе к данным
  */
 export class AccessResponseDTO {
   @ApiProperty({
-    description: 'Имя пользователя',
-    example: 'username',
+    description: 'Уникальный идентификатор доступа',
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  username: string;
+  @IsString()
+  id!: string;
 
   @ApiProperty({
-    description: 'Имя кооператива',
-    example: 'coopname',
+    description: 'Имя пользователя, чьи данные доступны',
+    example: 'username123',
   })
-  coopname: string;
+  @IsString()
+  username!: string;
 
   @ApiProperty({
-    description: 'Публичный ключ кооператива',
-    example: 'EOS8mUftJXepGzdQ2TaCduNuSPAfXJHf22uex4u41ab1EVv9EAhWt',
+    description: 'Название кооператива, которому предоставлен доступ',
+    example: 'coop_example',
   })
-  public_key: string;
-
-  @ApiProperty({
-    description: 'Метаданные доступа',
-    type: Object,
-  })
-  meta: AccessMetaDomainInterface;
+  @IsString()
+  coopname!: string;
 
   @ApiProperty({
     description: 'Дата предоставления доступа',
-    example: '2023-01-01T00:00:00.000Z',
+    example: '2023-01-01T12:00:00Z',
   })
-  created_at: Date;
+  @IsDate()
+  @Type(() => Date)
+  granted_at!: Date;
 
-  constructor(entity: AccessRequest) {
-    this.username = entity.username;
-    this.coopname = entity.coopname;
-    this.public_key = entity.public_key;
-    this.meta = entity.meta;
-    this.created_at = entity.meta.requested_at;
+  @ApiProperty({
+    description: 'Активен ли доступ',
+    example: true,
+  })
+  @IsBoolean()
+  is_active!: boolean;
+
+  /**
+   * Создает экземпляр DTO из сущности запроса доступа
+   * @param accessRequest Сущность запроса доступа
+   */
+  constructor(accessRequest?: AccessRequest) {
+    if (accessRequest) {
+      Object.assign(this, accessRequest);
+    }
   }
 }

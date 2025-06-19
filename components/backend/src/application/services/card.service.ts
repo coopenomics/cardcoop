@@ -55,16 +55,51 @@ export class CardService {
    * @returns Массив карт пользователя
    */
   async getUserCards(user_id: string): Promise<GetUserCardsResponseDTO[]> {
-    const cards = await this.cardInteractor.getUserCards(user_id);
+    const cardsWithPrivateData =
+      await this.cardInteractor.getUserCardsWithPrivateData(user_id);
 
-    return cards.map((card) => ({
+    return cardsWithPrivateData.map(({ card, privateData }) => ({
       id: card.id,
       username: card.username,
       coopname: card.coopname,
       issued_at: card.meta.issued_at,
       card_type: card.meta.card_type,
       is_active: card.meta.is_active,
+      encrypted_key: privateData.encrypted_data,
     }));
+  }
+
+  /**
+   * Получает карту по имени пользователя и имени кооператива
+   *
+   * @param username Имя пользователя
+   * @param coopname Имя кооператива
+   * @param user_id ID пользователя для проверки прав доступа
+   * @returns Данные карты с зашифрованным ключом
+   */
+  async getCardByUserAndCoop(
+    username: string,
+    coopname: string,
+    user_id: string,
+  ): Promise<GetUserCardsResponseDTO> {
+    // Получаем полную информацию о карте с ключом через интерактор
+    const { card, privateData } =
+      await this.cardInteractor.getCardWithPrivateData(
+        username,
+        coopname,
+        user_id,
+      );
+
+    // Преобразуем в DTO и возвращаем
+    return {
+      id: card.id,
+      username: card.username,
+      coopname: card.coopname,
+      issued_at: card.meta.issued_at,
+      card_type: card.meta.card_type,
+      is_active: card.meta.is_active,
+      encrypted_key: privateData.encrypted_data,
+    };
   }
 
   /**
@@ -78,8 +113,11 @@ export class CardService {
     card_id: string,
     user_id: string,
   ): Promise<GetUserCardsResponseDTO> {
-    const card = await this.cardInteractor.getCardById(card_id, user_id);
+    // Получаем полную информацию о карте с ключом через интерактор
+    const { card, privateData } =
+      await this.cardInteractor.getCardWithPrivateDataById(card_id, user_id);
 
+    // Преобразуем в DTO и возвращаем
     return {
       id: card.id,
       username: card.username,
@@ -87,6 +125,7 @@ export class CardService {
       issued_at: card.meta.issued_at,
       card_type: card.meta.card_type,
       is_active: card.meta.is_active,
+      encrypted_key: privateData.encrypted_data,
     };
   }
 

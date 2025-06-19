@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsBoolean, IsDate } from 'class-validator';
+import { IsString, IsBoolean, IsDate, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 /**
@@ -21,7 +21,7 @@ export class GetUserCardsResponseDTO {
   username!: string;
 
   @ApiProperty({
-    description: 'Название кооператива',
+    description: 'Имя аккаунта кооператива',
     example: 'coop_example',
   })
   @IsString()
@@ -48,4 +48,12 @@ export class GetUserCardsResponseDTO {
   })
   @IsBoolean()
   is_active!: boolean;
+
+  @ApiProperty({
+    description: 'Зашифрованный ключ',
+    example: 'encrypted_key_data_base64',
+    required: true,
+  })
+  @IsString()
+  encrypted_key!: string;
 }

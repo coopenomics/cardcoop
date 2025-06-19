@@ -9,12 +9,19 @@ import {
   Delete,
   ForbiddenException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { CardService } from '../services/card.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { IssueCardResponseDTO } from '../dto/issue-card-response.dto';
 import { IssueCardInputDTO } from '../dto/issue-card-input.dto';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { Swagger } from '../auth/decorators/swagger.decorator';
 import { SchemaResponseDTO } from '../dto/get-card-schema-response.dto';
 import { GetUserCardsResponseDTO } from '../dto/get-user-cards-response.dto';
@@ -78,6 +85,38 @@ export class CardController {
   }
 
   /**
+   * Получает карту по имени пользователя и имени кооператива
+   */
+  @UseGuards(JwtAuthGuard)
+  @Get('by-coop')
+  @Swagger('Получение карты по имени пользователя и имени кооператива')
+  @ApiQuery({
+    name: 'username',
+    description: 'Имя пользователя',
+    type: String,
+    required: true,
+  })
+  @ApiQuery({
+    name: 'coopname',
+    description: 'Имя кооператива',
+    type: String,
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Данные карты с зашифрованным ключом',
+    type: GetUserCardsResponseDTO,
+  })
+  async getCardByUserAndCoop(
+    @Query('username') username: string,
+    @Query('coopname') coopname: string,
+    @Request() req,
+  ): Promise<GetUserCardsResponseDTO> {
+    const user_id = req.user.user_id;
+    return this.cardService.getCardByUserAndCoop(username, coopname, user_id);
+  }
+
+  /**
    * Получает карту по ID
    */
   @UseGuards(JwtAuthGuard)
@@ -99,30 +138,6 @@ export class CardController {
   ): Promise<GetUserCardsResponseDTO> {
     const user_id = req.user.user_id;
     return await this.cardService.getCardById(card_id, user_id);
-  }
-
-  /**
-   * Получает приватные данные по ID карты
-   */
-  @UseGuards(JwtAuthGuard)
-  @Get(':card_id/private-data')
-  @Swagger('Получение приватных данных по ID карты')
-  @ApiParam({
-    name: 'card_id',
-    description: 'ID карты',
-    type: String,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Приватные данные пользователя',
-    type: PrivateDataResponseDTO,
-  })
-  getPrivateData(
-    @Param('card_id') card_id: string,
-    @Request() req,
-  ): Promise<PrivateDataResponseDTO> {
-    const user_id = req.user.user_id;
-    return this.cardService.getPrivateDataByCardId(card_id, user_id);
   }
 
   /**

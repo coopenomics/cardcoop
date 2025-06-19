@@ -53,18 +53,39 @@ export class CardService {
         });
     }
     /**
-     * getPrivateData
-     * Получение приватных данных по ID карты
-     * @param cardId ID карты
-     * @returns PrivateDataResponseDTO Приватные данные пользователя
+     * getCardByUserAndCoop
+     * Получение карты по имени пользователя и имени кооператива
+     * @param username Имя пользователя
+     * @param coopname Имя кооператива
+     * @returns GetUserCardsResponseDTO Данные карты с зашифрованным ключом
      * @throws ApiError
      */
-    public static getPrivateData(
-        cardId: string,
-    ): CancelablePromise<PrivateDataResponseDTO> {
+    public static getCardByUserAndCoop(
+        username: string,
+        coopname: string,
+    ): CancelablePromise<GetUserCardsResponseDTO> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/card/{card_id}/private-data',
+            url: '/card/by-coop',
+            query: {
+                'username': username,
+                'coopname': coopname,
+            },
+        });
+    }
+    /**
+     * getCardById
+     * Получение карты по ID
+     * @param cardId ID карты
+     * @returns GetUserCardsResponseDTO Данные карты
+     * @throws ApiError
+     */
+    public static getCardById(
+        cardId: string,
+    ): CancelablePromise<GetUserCardsResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/card/{card_id}',
             path: {
                 'card_id': cardId,
             },
@@ -83,6 +104,24 @@ export class CardService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/card/{card_id}',
+            path: {
+                'card_id': cardId,
+            },
+        });
+    }
+    /**
+     * getPrivateData
+     * Получение приватных данных по ID карты
+     * @param cardId ID карты
+     * @returns PrivateDataResponseDTO Приватные данные пользователя
+     * @throws ApiError
+     */
+    public static getPrivateData(
+        cardId: string,
+    ): CancelablePromise<PrivateDataResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/card/{card_id}/private-data',
             path: {
                 'card_id': cardId,
             },

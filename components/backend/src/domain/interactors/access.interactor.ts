@@ -251,4 +251,29 @@ export class AccessInteractor {
   async listAccessesByUsername(username: string): Promise<AccessRequest[]> {
     return this.accessDomainService.listAccesses(username);
   }
+
+  /**
+   * Получение всех доступов пользователя по всем его картам.
+   *
+   * Этот метод агрегирует доступы со всех карт пользователя.
+   *
+   * @param user_id - ID пользователя
+   * @returns Список объектов AccessRequest со всех карт пользователя
+   */
+  async listUserAccesses(user_id: string): Promise<AccessRequest[]> {
+    // Получаем все карты пользователя
+    const userCards = await this.getUserCards(user_id);
+
+    if (!userCards || userCards.length === 0) {
+      return [];
+    }
+
+    // Для каждой карты получаем список доступов и объединяем их
+    const accessesByCard = await Promise.all(
+      userCards.map((card) => this.listAccessesByUsername(card.username)),
+    );
+
+    // Преобразуем в плоский массив и возвращаем
+    return accessesByCard.flat();
+  }
 }

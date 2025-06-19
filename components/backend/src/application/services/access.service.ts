@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { ExchangeTicketResponseDTO } from '../dto/exchange-ticket-response.dto';
 import { ExchangeTicketInputDTO } from '../dto/exchange-ticket-input.dto';
 import { ShareDataResponseDTO } from '../dto/share-data-response.dto';
@@ -57,7 +57,7 @@ export class AccessService {
     user_id: string,
     dto: RevokeAccessInputDTO,
   ): Promise<void> {
-    // Проверка принадлежности карты пользователю может быть добавлена в интеракторе
+    // Отзываем доступ с помощью имени пользователя из DTO
     await this.accessInteractor.revokeAccess(
       user_id,
       dto.username,
@@ -71,21 +71,7 @@ export class AccessService {
    * @returns Список доступов пользователя
    */
   async listAccesses(user_id: string): Promise<AccessResponseDTO[]> {
-    // Получаем все карты пользователя
-    const userCards = await this.accessInteractor.getUserCards(user_id);
-
-    if (!userCards || userCards.length === 0) {
-      return [];
-    }
-
-    // Для каждой карты получаем список доступов и объединяем их
-    const accessesByCard = await Promise.all(
-      userCards.map((card) =>
-        this.accessInteractor.listAccessesByUsername(card.username),
-      ),
-    );
-
-    // Преобразуем в плоский массив и маппим в DTO
-    return accessesByCard.flat().map((access) => new AccessResponseDTO(access));
+    const accesses = await this.accessInteractor.listUserAccesses(user_id);
+    return accesses.map((access) => new AccessResponseDTO(access));
   }
 }

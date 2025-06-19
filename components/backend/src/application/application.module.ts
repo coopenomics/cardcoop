@@ -22,6 +22,8 @@ import { AccessService } from './services/access.service';
 import { DomainModule } from 'src/domain/domain.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthController } from './controllers/health.controller';
+import { PersonaController } from './controllers/persona.controller';
+import { PersonaService } from './services/persona.service';
 
 @Module({
   imports: [DomainModule, AuthModule],
@@ -30,8 +32,9 @@ import { HealthController } from './controllers/health.controller';
     CardController,
     AccessController,
     HealthController,
+    PersonaController,
   ],
-  providers: [AuthService, CardService, AccessService],
+  providers: [AuthService, CardService, AccessService, PersonaService],
   exports: [AuthModule],
 })
 export class ApplicationModule {}

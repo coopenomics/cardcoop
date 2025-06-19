@@ -185,22 +185,6 @@ describe('CardController (e2e)', () => {
       expect(card.is_active).toBe(true);
     });
 
-    it('GET /card/:card_id/private-data должен вернуть приватные данные', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`/card/${cardId}/private-data`)
-        .set('Authorization', `Bearer ${accessToken}`);
-
-      debugResponse(response);
-
-      expect(response.status).toBe(200);
-
-      expect(response.body).toHaveProperty('encrypted_data');
-      expect(response.body).toHaveProperty('data_hash');
-      expect(response.body).toHaveProperty('version');
-      expect(response.body).toHaveProperty('data_type');
-      expect(response.body.encrypted_data).toBe(testCard.encrypted_data);
-    });
-
     it('DELETE /card/:card_id должен деактивировать карту', async () => {
       const response = await request(app.getHttpServer())
         .delete(`/card/${cardId}`)
@@ -280,20 +264,6 @@ describe('CardController (e2e)', () => {
     it('GET /card/user без авторизации должен вернуть ошибку 401', async () => {
       const response = await request(app.getHttpServer()).get('/card/user');
       expect(response.status).toBe(401);
-    });
-
-    it('GET /card/:card_id/private-data с неправильным ID карты должен вернуть ошибку', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`/card/invalid-id/private-data`)
-        .set('Authorization', `Bearer ${accessToken}`);
-
-      debugResponse(response);
-
-      // Проверяем, что получаем ошибку с нужным сообщением
-      expect(response.status).toBe(403);
-      expect(response.body.message).toBe(
-        'Доступ запрещен: карта не принадлежит пользователю',
-      );
     });
   });
 });

@@ -10,7 +10,7 @@ import { PrivateDataMetaSchema } from '../schemas/private-data-meta.schema';
 export class PrivateData {
   id!: string;
   user_id!: string;
-  encrypted_data!: string; // Зашифрованные персональные данные
+  encrypted_data!: string; // Зашифрованный приватный ключ
   data_hash!: string; // Хеш данных для верификации
   meta!: PrivateDataMetaInterface; // Метаданные
 

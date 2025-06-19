@@ -70,6 +70,46 @@ export class CardInteractor {
   }
 
   /**
+   * Получает карту по имени пользователя и имени кооператива.
+   *
+   * Проверяет уникальность карты по комбинации username и coopname.
+   * У одного пользователя может быть только одна карта в каждом кооперативе.
+   *
+   * @param username - Имя пользователя
+   * @param coopname - Название кооператива
+   * @param requesting_user_id - ID пользователя, запрашивающего карту
+   * @returns Карта пользователя
+   * @throws NotFoundException - если карта не найдена
+   * @throws ForbiddenException - если запрашивающий пользователь не имеет прав на просмотр карты
+   */
+  async getCardByUserAndCoop(
+    username: string,
+    coopname: string,
+    requesting_user_id: string,
+  ): Promise<Card> {
+    // Ищем карту по username и coopname
+    const card = await this.cardDomainService.findCardByUserAndCoop(
+      username,
+      coopname,
+    );
+
+    if (!card) {
+      throw new NotFoundException(
+        `Карта для пользователя ${username} в кооперативе ${coopname} не найдена`,
+      );
+    }
+
+    // Проверяем, что запрашивающий пользователь имеет право на просмотр карты
+    if (card.user_id !== requesting_user_id) {
+      throw new ForbiddenException(
+        'Доступ запрещен: запрашиваемая карта не принадлежит пользователю',
+      );
+    }
+
+    return card;
+  }
+
+  /**
    * Получает карту по ID.
    *
    * Находит карту по её уникальному идентификатору и проверяет,
@@ -151,5 +191,110 @@ export class CardInteractor {
    */
   getCardSchema() {
     return zodToJsonSchema(cardSchema, { name: 'cardSchema' });
+  }
+
+  /**
+   * Получает карту вместе с приватными данными по имени пользователя и имени кооператива.
+   *
+   * @param username - Имя пользователя
+   * @param coopname - Название кооператива
+   * @param requesting_user_id - ID пользователя, запрашивающего карту
+   * @returns Объект, содержащий карту и соответствующие приватные данные
+   * @throws NotFoundException - если карта не найдена
+   * @throws ForbiddenException - если запрашивающий пользователь не имеет прав на просмотр карты
+   */
+  async getCardWithPrivateData(
+    username: string,
+    coopname: string,
+    requesting_user_id: string,
+  ): Promise<{ card: Card; privateData: any }> {
+    // Получаем карту по username и coopname
+    const card = await this.getCardByUserAndCoop(
+      username,
+      coopname,
+      requesting_user_id,
+    );
+
+    if (!card) {
+      throw new NotFoundException(
+        `Карта для пользователя ${username} в кооперативе ${coopname} не найдена`,
+      );
+    }
+
+    // Получаем приватные данные
+    const privateData = await this.privateDataService.getPrivateDataById(
+      card.private_data_id,
+    );
+
+    return { card, privateData };
+  }
+
+  /**
+   * Получает карту вместе с приватными данными по ID карты.
+   *
+   * @param card_id - ID карты
+   * @param requesting_user_id - ID пользователя, запрашивающего карту
+   * @returns Объект, содержащий карту и соответствующие приватные данные
+   * @throws NotFoundException - если карта не найдена
+   * @throws ForbiddenException - если запрашивающий пользователь не имеет прав на просмотр карты
+   */
+  async getCardWithPrivateDataById(
+    card_id: string,
+    requesting_user_id: string,
+  ): Promise<{ card: Card; privateData: any }> {
+    // Получаем карту по ID
+    const card = await this.getCardById(card_id, requesting_user_id);
+
+    // Получаем приватные данные
+    const privateData = await this.privateDataService.getPrivateDataById(
+      card.private_data_id,
+    );
+
+    return { card, privateData };
+  }
+
+  /**
+   * Получает все карты пользователя вместе с их приватными данными.
+   *
+   * @param user_id - ID пользователя
+   * @returns Массив объектов, содержащих карты и соответствующие приватные данные
+   */
+  async getUserCardsWithPrivateData(
+    user_id: string,
+  ): Promise<Array<{ card: Card; privateData: any }>> {
+    const cards = await this.getUserCards(user_id);
+    const result: Array<{ card: Card; privateData: any }> = [];
+
+    // Запрашиваем приватные данные для каждой карты
+    for (const card of cards) {
+      const privateData = await this.privateDataService.getPrivateDataById(
+        card.private_data_id,
+      );
+      result.push({ card, privateData });
+    }
+
+    return result;
+  }
+
+  /**
+   * Получает приватные данные пользователя без привязки к карте.
+   *
+   * @param user_id - ID пользователя
+   * @returns Объект приватных данных
+   * @throws NotFoundException - если приватные данные не найдены
+   */
+  async getUserPrivateData(user_id: string): Promise<any> {
+    // Получаем приватные данные пользователя
+    const privateData =
+      await this.privateDataService.getPrivateDataByUserId(user_id);
+
+    // Если данные не найдены, выбрасываем исключение
+    if (!privateData) {
+      throw new NotFoundException(
+        `Приватные данные для пользователя ${user_id} не найдены`,
+      );
+    }
+
+    return privateData;
   }
 }

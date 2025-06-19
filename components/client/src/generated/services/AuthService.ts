@@ -9,6 +9,8 @@ import type { InitiateLoginInputDTO } from '../models/InitiateLoginInputDTO';
 import type { InitiateRegistrationInputDTO } from '../models/InitiateRegistrationInputDTO';
 import type { LogoutInputDTO } from '../models/LogoutInputDTO';
 import type { RefreshTokenInputDTO } from '../models/RefreshTokenInputDTO';
+import type { VerifyEmailInputDTO } from '../models/VerifyEmailInputDTO';
+import type { VerifyEmailResponseDTO } from '../models/VerifyEmailResponseDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -111,6 +113,23 @@ export class AuthService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/logout',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * verifyEmail
+     * Подтверждение email кодом
+     * @param requestBody
+     * @returns VerifyEmailResponseDTO Email успешно подтвержден
+     * @throws ApiError
+     */
+    public static verifyEmail(
+        requestBody: VerifyEmailInputDTO,
+    ): CancelablePromise<VerifyEmailResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/auth/verify-email',
             body: requestBody,
             mediaType: 'application/json',
         });

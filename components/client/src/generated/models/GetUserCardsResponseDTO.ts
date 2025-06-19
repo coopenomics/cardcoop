@@ -12,7 +12,7 @@ export type GetUserCardsResponseDTO = {
      */
     username: string;
     /**
-     * Название кооператива
+     * Имя аккаунта кооператива
      */
     coopname: string;
     /**
@@ -27,5 +27,9 @@ export type GetUserCardsResponseDTO = {
      * Активна ли карта
      */
     is_active: boolean;
+    /**
+     * Зашифрованный ключ
+     */
+    encrypted_key: string;
 };
 

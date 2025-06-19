@@ -192,6 +192,39 @@
         ]
       }
     },
+    "/auth/verify-email": {
+      "post": {
+        "description": "Подтверждение email кодом",
+        "operationId": "verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Email успешно подтвержден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyEmailResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "verifyEmail",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/card/issue": {
       "post": {
         "description": "Выпуск карты",
@@ -274,6 +307,112 @@
         ]
       }
     },
+    "/card/by-coop": {
+      "get": {
+        "description": "Получение карты по имени пользователя и имени кооператива",
+        "operationId": "getCardByUserAndCoop",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "query",
+            "description": "Имя пользователя",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "coopname",
+            "required": true,
+            "in": "query",
+            "description": "Имя кооператива",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные карты с зашифрованным ключом",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserCardsResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "getCardByUserAndCoop",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
+    "/card/{card_id}": {
+      "get": {
+        "description": "Получение карты по ID",
+        "operationId": "getCardById",
+        "parameters": [
+          {
+            "name": "card_id",
+            "required": true,
+            "in": "path",
+            "description": "ID карты",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные карты",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserCardsResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "getCardById",
+        "tags": [
+          "Card"
+        ]
+      },
+      "delete": {
+        "description": "Деактивация карты",
+        "operationId": "deactivateCard",
+        "parameters": [
+          {
+            "name": "card_id",
+            "required": true,
+            "in": "path",
+            "description": "ID карты для деактивации",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Карта успешно деактивирована",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueCardResponseDTO"
+                }
+              }
+            }
+          }
+        },
+        "summary": "deactivateCard",
+        "tags": [
+          "Card"
+        ]
+      }
+    },
     "/card/{card_id}/private-data": {
       "get": {
         "description": "Получение приватных данных по ID карты",
@@ -302,39 +441,6 @@
           }
         },
         "summary": "getPrivateData",
-        "tags": [
-          "Card"
-        ]
-      }
-    },
-    "/card/{card_id}": {
-      "delete": {
-        "description": "Деактивация карты",
-        "operationId": "deactivateCard",
-        "parameters": [
-          {
-            "name": "card_id",
-            "required": true,
-            "in": "path",
-            "description": "ID карты для деактивации",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Карта успешно деактивирована",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IssueCardResponseDTO"
-                }
-              }
-            }
-          }
-        },
-        "summary": "deactivateCard",
         "tags": [
           "Card"
         ]
@@ -476,6 +582,72 @@
         "summary": "getEncryptedData",
         "tags": [
           "Access"
+        ]
+      }
+    },
+    "/access/revoke": {
+      "post": {
+        "description": "Отзыв доступа у кооператива",
+        "operationId": "revokeAccess",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeAccessInputDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Доступ успешно отозван"
+          }
+        },
+        "summary": "revokeAccess",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/access/list": {
+      "get": {
+        "description": "Получение списка доступов пользователя",
+        "operationId": "listAccesses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список предоставленных доступов пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccessResponseDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "listAccesses",
+        "tags": [
+          "Access"
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "HealthController_healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
         ]
       }
     }
@@ -632,6 +804,44 @@
         "required": [
           "access_token",
           "refresh_token"
+        ]
+      },
+      "VerifyEmailInputDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "user@example.com"
+          },
+          "code": {
+            "type": "string",
+            "description": "Код подтверждения из email",
+            "example": "123456"
+          },
+          "uuid": {
+            "type": "string",
+            "description": "Уникальный идентификатор запроса",
+            "example": "uuid-123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "email",
+          "code",
+          "uuid"
+        ]
+      },
+      "VerifyEmailResponseDTO": {
+        "type": "object",
+        "properties": {
+          "verified": {
+            "type": "boolean",
+            "description": "Статус верификации",
+            "example": true
+          }
+        },
+        "required": [
+          "verified"
         ]
       },
       "CardMetaDTO": {
@@ -812,7 +1022,7 @@
           },
           "coopname": {
             "type": "string",
-            "description": "Название кооператива",
+            "description": "Имя аккаунта кооператива",
             "example": "coop_example"
           },
           "issued_at": {
@@ -830,6 +1040,11 @@
             "type": "boolean",
             "description": "Активна ли карта",
             "example": true
+          },
+          "encrypted_key": {
+            "type": "string",
+            "description": "Зашифрованный ключ",
+            "example": "encrypted_key_data_base64"
           }
         },
         "required": [
@@ -838,7 +1053,8 @@
           "coopname",
           "issued_at",
           "card_type",
-          "is_active"
+          "is_active",
+          "encrypted_key"
         ]
       },
       "PrivateDataResponseDTO": {
@@ -1055,6 +1271,63 @@
           "username",
           "public_key",
           "meta"
+        ]
+      },
+      "RevokeAccessInputDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя, чьи данные отзываются",
+            "example": "username123"
+          },
+          "coopname": {
+            "type": "string",
+            "description": "Название кооператива, у которого отзывается доступ",
+            "example": "coop_example"
+          }
+        },
+        "required": [
+          "username",
+          "coopname"
+        ]
+      },
+      "AccessResponseDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Уникальный идентификатор доступа",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя, чьи данные доступны",
+            "example": "username123"
+          },
+          "coopname": {
+            "type": "string",
+            "description": "Название кооператива, которому предоставлен доступ",
+            "example": "coop_example"
+          },
+          "granted_at": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата предоставления доступа",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Активен ли доступ",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "coopname",
+          "granted_at",
+          "is_active"
         ]
       }
     }
